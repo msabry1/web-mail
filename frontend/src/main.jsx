@@ -1,12 +1,13 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
-import store from './app/store'
-import { Provider } from 'react-redux'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import './index.css'; // Make sure this path matches the actual location of your CSS file
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    {/*Provider*/}
     <App />
-  </Provider>
-)
+  </React.StrictMode>
+);
