@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+body{
+    background-color: #F6F8FC;
+    font-family: "DM Sans", sans-serif;
+}
+
+@media (max-width:768px) {
+    .sidebar{
+        width: fit-content;
+    }
+    .sidebar span{
+        display: none;
+    }
+   
+}
