@@ -9,9 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -20,12 +18,12 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class AWSAttachmentRepository implements AttachmentRepository {
 
-    @Autowired
-    private S3AsyncClient s3AsyncClient;
-
   @Value("${aws.s3.bucket_name}")
   private String bucketName;
 
+   private final S3AsyncClient s3AsyncClient;
+
+    @Autowired
     public AWSAttachmentRepository(S3AsyncClient s3AsyncClient) {
         this.s3AsyncClient = s3AsyncClient;
     }

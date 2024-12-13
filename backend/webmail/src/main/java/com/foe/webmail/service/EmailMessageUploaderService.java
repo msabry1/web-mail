@@ -17,8 +17,13 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class EmailMessageUploaderService {
 
+    private final MultipartUploadService multipartUploadService;
+
     @Autowired
-    private MultipartUploadService multipartUploadService;
+    public EmailMessageUploaderService(MultipartUploadService multipartUploadService) {
+        this.multipartUploadService = multipartUploadService;
+    }
+
 
     public void upload(String Message, List<MultipartFile> files) {
         List<MultipartFileDto> fileDtos = MultipartFileDtoMapper.mapToDto(files);

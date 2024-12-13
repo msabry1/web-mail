@@ -29,11 +29,4 @@ public class AWSConfiguration {
                 .region(Region.of(awsRegion))
                 .build();
     }
-
-    @Bean
-    public Executor asyncExecutor() {
-        return Executors.newFixedThreadPool(
-                Math.min(100, Runtime.getRuntime().availableProcessors() * 2)
-        );
-    }
 }
