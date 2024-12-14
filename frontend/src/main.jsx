@@ -1,13 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import './index.css'; // Make sure this path matches the actual location of your CSS file
-
+import "./index.css";
+import { UserProvider } from "./context/UserContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    {/*Provider*/}
-    <App />
+    <UserProvider>
+      <App />
+    </UserProvider>
   </React.StrictMode>
 );

@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { GoSearch } from "react-icons/go";
+import { useUI } from "../../context/UIContext";
+import { useUser } from "../../context/UserContext";
+import { useEmailsContext } from "../../context/EmailsContext";
 const Navbar = () => {
-    // const [profile, setProfile] = useState(false);
+  const { profile, setProfile } = useUI();
   const [input, setInput] = useState("");
-  useEffect(() => {
-    // setProfile(false);
-  }, []);
+  const { user } = useUser();
+  const { setSearchQuery } = useEmailsContext();
 
   useEffect(() => {
-    // setSearchText(input);
+    setSearchQuery(input);  
   }, [input]);
-  
+
   return (
     <div className="w-full left-0 flex justify-between gap-2 items-center px-4 py-2">
       <div>
@@ -27,16 +29,13 @@ const Navbar = () => {
           placeholder="Search"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="bg-transparent outline-none"
+          className="bg-transparent outline-none w-10/12"
         />
       </div>
 
-      <div
-        // onClick={() => setProfile(!profile)}
-        className="cursor-pointer"
-      >
+      <div onClick={() => setProfile(!profile)} className="cursor-pointer">
         <img
-        //   src={user?.image}
+          src={user?.image}
           alt="profile_pic"
           className="rounded-full w-10 h-10 object-cover object-center"
         />

@@ -1,16 +1,30 @@
 import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { GoTrash, GoArchive } from "react-icons/go";
+import { useEmailsContext } from "../../context/EmailsContext";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+
 const MailDetails = () => {
+  const { emails, setEmails } = useEmailsContext();
   const navigate = useNavigate();
-  const mail = null;
-  //   const mail = useSelector((state) => state.app.selectedMail);
+  const id = useParams().id;
+  const email = emails.filter((email) => email.id == id)[0];
+
+  useEffect(() => {
+    //TODO: Mark email as read to the backend
+    if (email && !email.read) {
+      email.read = true;
+      setEmails((prevEmails) => prevEmails.map((e) => e.id === email.id ? email : e));
+    }
+  }, [email, emails, setEmails]);
+
   const handleDelete = () => {
     try {
-      //   onDelete(mail.id);
+      //   onDelete(email.id);
       navigate("/"); // Navigate back to the inbox
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
   return (
@@ -36,7 +50,7 @@ const MailDetails = () => {
         </div>
       </div>
       <div className="ml-2 mt-5">
-        <h2 className="text-xl">{mail?.subject}</h2>
+        <h2 className="text-xl">{email?.subject}</h2>
         <div className="mt-2 mb-5 flex items-center gap-2">
           <img
             src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
@@ -44,11 +58,11 @@ const MailDetails = () => {
             className="w-10 h-10 "
           />
           <div>
-            <h2 className="font-semibold">{mail.to}</h2>
+            <h2 className="font-semibold">{email?.to}</h2>
             <p className="text-sm">to me</p>
           </div>
         </div>
-        <p className="mt-4 text-lg">{mail?.message}</p>
+        <p className="mt-4 text-lg">{email?.message}</p>
       </div>
     </div>
   );
