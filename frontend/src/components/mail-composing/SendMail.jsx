@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { IoMdClose } from "react-icons/io";
 import EmailSuccessAnimation from "./EmailSuccessAnimation"; // Import the new component
 import { useUI } from "../../context/UIContext";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import { Editor } from "@toast-ui/editor";
+
 const SendMail = () => {
   const { toggleComposing } = useUI();
   const initialData = {
@@ -14,6 +17,27 @@ const SendMail = () => {
   const [formData, setFormData] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+
+  const editorRef = useRef(null);
+  const editorInstanceRef = useRef(null);
+
+  useEffect(() => {
+    if (editorRef.current && !editorInstanceRef.current) {
+      editorInstanceRef.current = new Editor({
+        el: editorRef.current,
+        height: "500px",
+        initialEditType: "wysiwyg",
+        previewStyle: "tab",
+      });
+    }
+
+    // Cleanup on unmount
+    return () => {
+      // if (editorInstanceRef.current) {
+        // editorInstanceRef.current.destroy();
+      // }
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,6 +54,7 @@ const SendMail = () => {
 
     try {
       //TODO: await MailService.sendMail(formData);
+      const emailContent = editorInstanceRef.current.getHTML();
 
       setFormData(initialData);
       setShowSuccessAnimation(true);
@@ -78,13 +103,10 @@ const SendMail = () => {
             />
           </div>
 
-          <textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            className="outline-none h-44"
-            required
-          />
+          <div className="form-group">
+            <label>Message</label>
+            <div ref={editorRef}></div>
+          </div>
 
           <div>
             <button

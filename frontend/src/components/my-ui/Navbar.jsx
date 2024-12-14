@@ -143,7 +143,7 @@ const Navbar = () => {
                 <Label htmlFor="body" className="text-right">
                   Body
                 </Label>
-                <input
+                <Input
                   id="body"
                   name="body"
                   placeholder="Filter by email body"
@@ -224,15 +224,8 @@ const Navbar = () => {
                   placeholder="Folder name"
                   value={newFolderName}
                   onChange={(e) => setNewFolderName(e.target.value)}
-                  className="col-span-2"
+                  className="col-span-3"
                 />
-                <Button
-                  onClick={createNewFolder}
-                  disabled={!newFolderName.trim()}
-                  className="col-span-1"
-                >
-                  Create
-                </Button>
               </div>
             </div>
 
@@ -244,6 +237,15 @@ const Navbar = () => {
                 Cancel
               </Button>
               <Button onClick={applyFilters}>Apply Filters</Button>
+              <Button
+                onClick={() => {
+                  createNewFolder();
+                  applyFilters();
+                }}
+                disabled={!newFolderName.trim()}
+              >
+                Create
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
