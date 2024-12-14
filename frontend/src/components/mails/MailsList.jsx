@@ -136,7 +136,7 @@ const MailsList = () => {
               />
             </button>
 
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-500 mr-2">
               {new Date(email?.createdAt?.seconds * 1000)
                 .toUTCString()
                 .slice(5, 11)}
