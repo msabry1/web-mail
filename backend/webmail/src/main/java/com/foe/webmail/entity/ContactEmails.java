@@ -1,5 +1,6 @@
 package com.foe.webmail.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,5 +19,6 @@ public class ContactEmails extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional=false)
     @JoinColumn(name = "contact_id", referencedColumnName = "id")
+    @JsonIgnore
     private Contact contact;
 }

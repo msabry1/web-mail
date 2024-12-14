@@ -1,4 +1,6 @@
 package com.foe.webmail.constants;
 
-public class MailStatus {
+public abstract class MailStatus {
+    public static final String INBOX = "inbox";
+    public static final String TRASH = "trash";
 }

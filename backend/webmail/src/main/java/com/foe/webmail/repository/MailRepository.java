@@ -1,10 +1,11 @@
 package com.foe.webmail.repository;
 
-import com.foe.webMail.entity.Mail;
+import com.foe.webmail.entity.Mail;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
 
 public interface MailRepository extends JpaRepository<Mail, Long> {
 
