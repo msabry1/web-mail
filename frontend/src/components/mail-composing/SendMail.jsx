@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import PropTypes from "prop-types";
 import { IoMdClose } from "react-icons/io";
 import EmailSuccessAnimation from "./EmailSuccessAnimation"; // Import the new component
 import { useUI } from "../../context/UIContext";
@@ -18,25 +17,18 @@ const SendMail = () => {
   const [loading, setLoading] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
-  const editorRef = useRef(null);
+  const editorDiv = useRef(null);
   const editorInstanceRef = useRef(null);
 
   useEffect(() => {
-    if (editorRef.current && !editorInstanceRef.current) {
+    if (editorDiv.current && !editorInstanceRef.current) {
       editorInstanceRef.current = new Editor({
-        el: editorRef.current,
-        height: "500px",
+        el: editorDiv.current,
+        height: "59vh",
         initialEditType: "wysiwyg",
         previewStyle: "tab",
       });
     }
-
-    // Cleanup on unmount
-    return () => {
-      // if (editorInstanceRef.current) {
-        // editorInstanceRef.current.destroy();
-      // }
-    };
   }, []);
 
   const handleChange = (e) => {
@@ -54,8 +46,8 @@ const SendMail = () => {
 
     try {
       //TODO: await MailService.sendMail(formData);
-      const emailContent = editorInstanceRef.current.getHTML();
-
+      // const emailContent = editorInstanceRef.current.getMarkdown();
+      // console.log("Email content:", emailContent);
       setFormData(initialData);
       setShowSuccessAnimation(true);
     } catch (err) {
@@ -74,7 +66,7 @@ const SendMail = () => {
 
   return (
     <>
-      <div className="absolute bottom-0 lg:right-16 right-0 rounded-t-lg lg:w-1/3 w-full bg-white p-5 shadow-lg">
+      <div className="absolute bottom-0 lg:right-16 right-0 rounded-t-lg lg:w-fit w-full bg-white p-5 shadow-lg">
         <div className="flex items-center bg-gray-200 p-2 rounded-lg mb-3 justify-between">
           <span>New Message</span>
           <IoMdClose className="cursor-pointer" onClick={toggleComposing} />
@@ -105,7 +97,7 @@ const SendMail = () => {
 
           <div className="form-group">
             <label>Message</label>
-            <div ref={editorRef}></div>
+            <div ref={editorDiv}></div>
           </div>
 
           <div>
@@ -124,10 +116,6 @@ const SendMail = () => {
       />
     </>
   );
-};
-
-SendMail.propTypes = {
-  onClose: PropTypes.func.isRequired, // Function that closes the mail form
 };
 
 export default SendMail;

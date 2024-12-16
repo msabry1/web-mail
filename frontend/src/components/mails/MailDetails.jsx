@@ -3,21 +3,42 @@ import { useNavigate } from "react-router-dom";
 import { GoTrash, GoArchive } from "react-icons/go";
 import { useEmailsContext } from "../../context/EmailsContext";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+
+import "@toast-ui/editor/dist/toastui-editor-viewer.css";
+import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
 
 const MailDetails = () => {
   const { emails, setEmails } = useEmailsContext();
   const navigate = useNavigate();
   const id = useParams().id;
   const email = emails.filter((email) => email.id == id)[0];
+  const viewerDiv = useRef(null);
+  const viewerInstanceRef = useRef(null);
 
   useEffect(() => {
     //TODO: Mark email as read to the backend
     if (email && !email.read) {
       email.read = true;
-      setEmails((prevEmails) => prevEmails.map((e) => e.id === email.id ? email : e));
+      setEmails((prevEmails) =>
+        prevEmails.map((e) => (e.id === email.id ? email : e))
+      );
     }
   }, [email, emails, setEmails]);
+
+  // Use actual email content instead of hardcoded content
+  const content = email?.message || "";
+
+  useEffect(() => {
+    if (viewerDiv.current && !viewerInstanceRef.current && content) {
+      viewerInstanceRef.current = new Viewer({
+        el: viewerDiv.current,
+        height: "59vh",
+        initialValue: content,
+      });
+    }
+
+  }, [content]);
 
   const handleDelete = () => {
     try {
@@ -27,6 +48,7 @@ const MailDetails = () => {
       console.error(err);
     }
   };
+
   return (
     <div className="bg-white p-2 rounded-lg w-full lg:mr-5">
       <div className="flex items-center">
@@ -62,7 +84,9 @@ const MailDetails = () => {
             <p className="text-sm">to me</p>
           </div>
         </div>
-        <p className="mt-4 text-lg">{email?.message}</p>
+        <div>
+          <div ref={viewerDiv}></div>
+        </div>
       </div>
     </div>
   );
