@@ -11,6 +11,7 @@ export const UIProvider = ({ children }) => {
   const toggleProfile = () => setProfile((prev) => !prev);
 
   // Value to be provided to consuming components
+  
   const value = {
     composing,
     setComposing,
