@@ -40,5 +40,9 @@ public class Mail extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "receiver_id", referencedColumnName = "id")
     )
     private List<User> receivers;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "mails")
+    private List<Folder> folders;
 }
 

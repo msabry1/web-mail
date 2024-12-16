@@ -26,5 +26,5 @@ public class User extends BaseEntity {
     private List<Folder> folders;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "sender")
-    private List<Mail> mails;
+    private List<Mail> sentMails;
 }
