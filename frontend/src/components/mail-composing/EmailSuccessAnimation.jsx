@@ -6,8 +6,6 @@ import PropTypes from "prop-types";
 const EmailSuccessAnimation = ({ isVisible, onClose }) => {
   useEffect(() => {
     if (isVisible) {
-
-      //* show animation for 1 sec
       const timer = setTimeout(() => {
         onClose();
       }, 1000);

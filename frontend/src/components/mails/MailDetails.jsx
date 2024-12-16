@@ -4,7 +4,6 @@ import { GoTrash, GoArchive } from "react-icons/go";
 import { useEmailsContext } from "../../context/EmailsContext";
 import { useParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
-
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
 
@@ -26,18 +25,15 @@ const MailDetails = () => {
     }
   }, [email, emails, setEmails]);
 
-  // Use actual email content instead of hardcoded content
   const content = email?.message || "";
 
   useEffect(() => {
     if (viewerDiv.current && !viewerInstanceRef.current && content) {
       viewerInstanceRef.current = new Viewer({
         el: viewerDiv.current,
-        height: "59vh",
         initialValue: content,
       });
     }
-
   }, [content]);
 
   const handleDelete = () => {

@@ -16,6 +16,16 @@ export const EmailsProvider = ({ children }) => {
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentFolder, setCurrentFolder] = useState("inbox");
+  const [drafts, setDrafts] = useState(() => {
+    //! Initializing drafts from localStorage on first render
+    try {
+      const savedDrafts = localStorage.getItem("emailDrafts");
+      return savedDrafts ? JSON.parse(savedDrafts) : [];
+    } catch (error) {
+      console.error("Error parsing drafts from localStorage:", error);
+      return [];
+    }
+  });
 
   useEffect(() => {
     const fetchedEmails = [
@@ -53,20 +63,23 @@ export const EmailsProvider = ({ children }) => {
     setEmails(fetchedEmails);
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("emailDrafts", JSON.stringify(drafts));
+  }, [drafts]);
+
+  useEffect(() => {
+    setSelectedEmails([]);
+  }, [filter, searchQuery, currentFolder]);
+
   const filteredEmails = useMemo(() => {
-    console.log("in filtering currentFolder", currentFolder);
-    // First, filter based on folder
     let emailsToFilter = emails;
+
     if (currentFolder === "starred") {
       emailsToFilter = emails.filter((email) => email.starred);
     } else if (currentFolder !== "inbox") {
-      // For custom folders or other specific filters
-      // You might fetch or filter differently based on the folder
-      // This is a placeholder for custom folder logic
       emailsToFilter = emails.filter((email) => email.folder === currentFolder);
     }
 
-    // Then apply search and priority filters
     return emailsToFilter.filter((email) => {
       const matchesSearch =
         email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -88,19 +101,52 @@ export const EmailsProvider = ({ children }) => {
   };
 
   const toggleSelectAll = () => {
-    setSelectedEmails(
-      selectedEmails.length === filteredEmails.length
-        ? []
-        : filteredEmails.map((email) => email.id)
-    );
+    if (currentFolder === "drafts") {
+      setSelectedEmails(
+        selectedEmails.length > 0 ? [] : drafts.map((email) => email.id)
+      );
+    } else
+      setSelectedEmails(
+        selectedEmails.length > 0 ? [] : filteredEmails.map((email) => email.id)
+      );
   };
 
+  const saveDraft = (draftData) => {
+    const existingDraftIndex = drafts.findIndex(
+      (draft) => draft.id === draftData.id
+    );
+
+    if (existingDraftIndex !== -1) {
+      const updatedDrafts = [...drafts];
+      updatedDrafts[existingDraftIndex] = {
+        ...draftData,
+        createdAt: new Date(),
+      };
+      setDrafts(updatedDrafts);
+    } else {
+      const newDraft = {
+        ...draftData,
+        id: Date.now(), //! Use timestamp as unique ID
+        createdAt: new Date(),
+      };
+      setDrafts([...drafts, newDraft]);
+    }
+    localStorage.setItem("emailDrafts", JSON.stringify(drafts));
+  };
+
+  const deleteDraft = (draftId) => {
+    setDrafts(drafts.filter((draft) => draft.id !== draftId));
+  };
   return (
     <EmailsContext.Provider
       value={{
         emails: filteredEmails,
         setEmails,
+        drafts,
+        saveDraft,
+        deleteDraft,
         selectedEmails,
+        setSelectedEmails,
         toggleEmailSelection,
         toggleSelectAll,
         setSearchQuery,
