@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CheckSquare, Square } from "lucide-react";
 import { useEmailsContext } from "../../../context/EmailsContext";
 import { useNavigate } from "react-router-dom";
-import SendMail from "../../mail-composing/send-mail/SendMail"; // Import SendMail for draft editing
+import SendMail from "../../mail-composing/send-mail/SendMail";
 import { useUI } from "../../../context/UIContext";
 import MailsListHeader from "./MailsListHeader";
 import MailsListItem from "./MailsListItem";
@@ -27,7 +27,7 @@ const MailsList = () => {
 
   const [editingDraft, setEditingDraft] = useState(null);
   const [activeFilter, setActiveFilter] = useState(0);
-  const priorityOptions = ["All", "Major", "Medium", "Minor"];
+  const priorityOptions = ["All", "High", "Medium", "Low"];
 
   const handleEmailClick = (email) => {
     if (currentFolder === "drafts") {
@@ -47,15 +47,6 @@ const MailsList = () => {
       setFilter(item);
     }
   };
-
-  if (editingDraft) {
-    return (
-      <SendMail
-        draftToEdit={editingDraft}
-        onCancel={() => setEditingDraft(null)}
-      />
-    );
-  }
 
   const handleDelete = () => {
     if (currentFolder === "drafts") {
@@ -81,7 +72,6 @@ const MailsList = () => {
         activeFilter={activeFilter}
         onFilterChange={handleFilterChange}
       />
-
       {/* Email List Header */}
       <div className="flex items-center border-b pb-2 mb-2 mt-3">
         <div className="mr-4 cursor-pointer" onClick={toggleSelectAll}>
@@ -105,7 +95,6 @@ const MailsList = () => {
           </button>
         )}
       </div>
-
       {displayItems.map((item) => (
         <MailsListItem
           key={item.id}
@@ -120,12 +109,18 @@ const MailsList = () => {
           isDraft={currentFolder === "drafts"}
         />
       ))}
-
       {/* No Items State */}
       {displayItems.length === 0 && (
         <div className="text-center text-gray-500 py-8">
           {currentFolder === "drafts" ? "No drafts saved" : "No emails found"}
         </div>
+      )}
+      
+      {editingDraft && (
+        <SendMail
+          draftToEdit={editingDraft}
+          onCancel={() => setEditingDraft(null)}
+        />
       )}
     </div>
   );

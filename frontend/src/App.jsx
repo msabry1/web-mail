@@ -12,6 +12,7 @@ import Body from "./components/my-ui/Body";
 import MailsList from "./components/mails/mails-list/MailsList";
 import MailDetails from "./components/mails/MailDetails";
 import PropTypes from "prop-types";
+import { Toaster } from "sonner";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useUser();
@@ -73,7 +74,17 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Toaster
+        position="top-right"
+        richColors
+        expand={false}
+        className="toaster-container"
+      />
+    </>
+  );
 }
 
 export default App;

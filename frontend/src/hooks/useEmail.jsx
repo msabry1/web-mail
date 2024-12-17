@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useEmailsContext } from "../context/EmailsContext";
 import { useUI } from "../context/UIContext";
-
+import { toast } from "sonner";
 export const useEmail = (draftToEdit = null) => {
   const { saveDraft } = useEmailsContext();
   const { setComposing } = useUI();
@@ -12,7 +12,7 @@ export const useEmail = (draftToEdit = null) => {
       to: "",
       subject: "",
       message: "",
-      priority: "Minor"
+      priority: "Medium",
     }),
     []
   );
@@ -26,13 +26,24 @@ export const useEmail = (draftToEdit = null) => {
   const handleInputChange = useCallback(
     async (e) => {
       const { name, value } = e.target;
-
+      const isAddedAttachment = !formData.attachments || formData?.attachments?.length < value?.length;
+      console.log(
+        "updating draft",
+        isAddedAttachment,
+        value,
+        formData.attachments
+      );
+      if (name === "attachments" && isAddedAttachment) {
+        toast.warning("Attachments will not be saved in the draft.", {
+          duration: 2000,
+        });
+      }
       setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
     },
-    [formData]
+    [setFormData, formData]
   );
 
   const resetForm = useCallback(() => {

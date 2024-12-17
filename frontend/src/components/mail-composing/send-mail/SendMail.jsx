@@ -1,4 +1,5 @@
-import { IoMdClose } from "react-icons/io";
+import { useState } from "react";
+import { IoMdClose, IoMdAttach, IoMdTrash } from "react-icons/io";
 import { FaCircle } from "react-icons/fa";
 import EmailSuccessAnimation from "../EmailSuccessAnimation";
 import { useUI } from "../../../context/UIContext";
@@ -9,7 +10,7 @@ import PropTypes from "prop-types";
 
 const PRIORITY_OPTIONS = [
   {
-    value: "Minor",
+    value: "Low",
     label: "Low Priority",
     color: "text-blue-500",
     bgColor: "bg-blue-50",
@@ -21,7 +22,7 @@ const PRIORITY_OPTIONS = [
     bgColor: "bg-yellow-50",
   },
   {
-    value: "Major",
+    value: "High",
     label: "High Priority",
     color: "text-red-500",
     bgColor: "bg-red-50",
@@ -42,19 +43,63 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
   } = useEmail(draftToEdit);
 
   const { setComposing } = useUI();
-  const { deleteDraft } = useEmailsContext();
+  const { deleteDrafts } = useEmailsContext();
+
+  const [attachments, setAttachments] = useState(formData.attachments || []);
+
+  const handleFileSelect = (event) => {
+    const newFiles = Array.from(event.target.files);
+
+    // Add new files, avoiding duplicates
+    const updatedAttachments = [
+      ...attachments,
+      ...newFiles.filter(
+        (newFile) =>
+          !attachments.some(
+            (existingFile) => existingFile.name === newFile.name
+          )
+      ),
+    ];
+
+    setAttachments(updatedAttachments);
+
+    // Update form data
+    handleInputChange({
+      target: {
+        name: "attachments",
+        value: updatedAttachments,
+      },
+    });
+  };
+
+  const removeAttachment = (fileToRemove) => {
+    const updatedAttachments = attachments.filter(
+      (file) => file !== fileToRemove
+    );
+    setAttachments(updatedAttachments);
+
+    handleInputChange({
+      target: {
+        name: "attachments",
+        value: updatedAttachments,
+      },
+    });
+  };
 
   const sendMail = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Existing send mail logic
+      // TODO: Implement actual file upload logic
+      console.log("Attachments to send:", attachments);
+
       if (formData.id) {
-        deleteDraft(formData.id);
+        deleteDrafts([formData.id]);
       }
       console.log("sending mail");
       setShowSuccessAnimation(true);
       resetForm();
+      setAttachments([]); // Clear attachments
       setComposing(false);
     } catch (err) {
       console.error("Error sending email:", err);
@@ -68,14 +113,14 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
 
   return (
     <>
-      <div className="absolute bottom-0 lg:right-16 right-0 rounded-t-lg lg:w-fit w-full bg-white p-5 shadow-lg">
+      <div className="fixed bottom-0 right-0 lg:right-16 lg:max-w-screen-lg bg-white p-5 shadow-lg rounded-t-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center bg-gray-200 p-2 rounded-lg mb-3 justify-between">
           <span>{draftToEdit ? "Edit Draft" : "New Message"}</span>
           <div className="flex items-center gap-2">
             <IoMdClose
               className="cursor-pointer"
               onClick={() => {
-                handleSaveDraft({ ...formData });
+                handleSaveDraft({ ...formData, attachments });
                 setComposing(false);
                 onCancel();
               }}
@@ -106,15 +151,15 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
             />
           </div>
 
-          {/* Improved Priority Selector */}
+          {/* Priority Selector (Previous Implementation) */}
           <div className="border-b flex items-center gap-3 pb-1">
             <span>Priority</span>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 w-full">
               {PRIORITY_OPTIONS.map((option) => (
                 <label
                   key={option.value}
                   className={`
-                    flex items-center gap-1 px-2 py-1 rounded-full cursor-pointer
+                    flex items-center justify-center gap-1 px-2 py-1 rounded-full cursor-pointer w-full
                     ${
                       formData.priority === option.value
                         ? `${option.bgColor} ${option.color} font-semibold`
@@ -137,21 +182,64 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
             </div>
           </div>
 
+          {/* Attachments Section */}
+          <div className="border-b pb-1 overflow-y-auto">
+            <div className="flex items-center gap-3">
+              <span>Attachments</span>
+              <label className="cursor-pointer flex items-center gap-1">
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <IoMdAttach className="text-gray-600" />
+                <span className="text-sm text-gray-600">Add files</span>
+              </label>
+            </div>
+
+            {/* Attachment List */}
+            {attachments.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {attachments.map((file, index) => (
+                  <div
+                    key={`${file.name}-${index}`}
+                    className="flex items-center bg-gray-100 rounded-full px-2 py-1 text-sm"
+                  >
+                    <span className="mr-2 max-w-[150px] truncate">
+                      {file.name}
+                    </span>
+                    <span className="text-xs text-gray-500 mr-2">
+                      {(file.size / 1024).toFixed(1)} KB
+                    </span>
+                    <IoMdTrash
+                      className="text-red-500 cursor-pointer"
+                      onClick={() => removeAttachment(file)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="form-group">
-            <label>Message</label>
             <EmailEditor
               initialContent={formData.message}
               onChange={handleInputChange}
             />
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <button
               type="submit"
               className="bg-[#1A73E8] text-white px-4 py-1 rounded-full"
             >
               {loading ? "Sending..." : "Send"}
             </button>
+            <span className="text-sm text-gray-500">
+              {attachments.length > 0 &&
+                `${attachments.length} file(s) attached`}
+            </span>
           </div>
         </form>
       </div>
@@ -171,7 +259,8 @@ SendMail.propTypes = {
     to: PropTypes.string,
     subject: PropTypes.string,
     message: PropTypes.string,
-    priority: PropTypes.oneOf(["low", "medium", "high"]),
+    priority: PropTypes.oneOf(["Low", "Medium", "High"]),
+    attachments: PropTypes.arrayOf(PropTypes.instanceOf(File)),
   }),
   onCancel: PropTypes.func,
 };

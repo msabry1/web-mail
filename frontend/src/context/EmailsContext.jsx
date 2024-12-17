@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import { useUser } from "./UserContext";
 import PropTypes from "prop-types";
+import { toast } from "sonner";
 
 export const PriorityIcons = {
   All: "/inbox.png",
-  Major: "/high.png",
+  High: "/high.png",
   Medium: "/medium.png",
-  Minor: "/low.png",
+  Low: "/low.png",
 };
 
 const EmailsContext = createContext();
@@ -28,7 +29,7 @@ export const EmailsProvider = ({ children }) => {
         subject: "Meeting Reminder",
         message: "Don't forget about the meeting at 10am.",
         createdAt: { seconds: 1678955452 },
-        priority: "Major",
+        priority: "High",
         read: false,
         starred: false,
       },
@@ -38,7 +39,7 @@ export const EmailsProvider = ({ children }) => {
         subject: "Promotion Offer",
         message: "Get 50% off on your next purchase.",
         createdAt: { seconds: 1678955735 },
-        priority: "Minor",
+        priority: "Low",
         read: false,
         starred: true,
       },
@@ -69,14 +70,34 @@ export const EmailsProvider = ({ children }) => {
     }
   }, [user?.username]);
 
-  useEffect(() => {
-    if (user?.username) {
+useEffect(() => {
+  if (user?.username) {
+    try {
+      // Attempt to save drafts to localStorage
       localStorage.setItem(
         `${user.username}-emailDrafts`,
         JSON.stringify(drafts)
       );
+    } catch (error) {
+      if (
+        error instanceof DOMException &&
+        error.name === "QuotaExceededError"
+      ) {
+        toast.error("Draft could not be saved", {
+          description:
+            "Your draft is too large to save locally. Try removing some attachments or large content.",
+          duration: 3000,
+        });
+
+      } else {
+        toast.error("Unable to save draft", {
+          description: "An unexpected error occurred while saving your draft.",
+          duration: 3000,
+        });
+      }
     }
-  }, [user?.username, drafts]);
+  }
+}, [user?.username, drafts]);
 
   useEffect(() => {
     setSelectedEmails([]);
@@ -132,6 +153,7 @@ export const EmailsProvider = ({ children }) => {
       updatedDrafts[existingDraftIndex] = {
         ...draftData,
         createdAt: new Date(),
+        attachments: []
       };
       setDrafts(updatedDrafts);
     } else {
@@ -146,14 +168,10 @@ export const EmailsProvider = ({ children }) => {
         ...draftData,
         id: Date.now(), //! Use timestamp as unique ID
         createdAt: new Date(),
+        attachments: [],
       };
       setDrafts([...drafts, newDraft]);
     }
-    console.log("username", user.username);
-    localStorage.setItem(
-      `${user.username}-emailDrafts`,
-      JSON.stringify(drafts)
-    );
   };
 
   const deleteDrafts = (draftIds) => {
