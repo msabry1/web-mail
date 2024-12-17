@@ -1,0 +1,12 @@
+package com.foe.webmail.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
+@Data
+@AllArgsConstructor
+public class MultipartFileDto {
+    private String key;
+    private MultipartFile file;
+}
