@@ -135,6 +135,13 @@ export const EmailsProvider = ({ children }) => {
       };
       setDrafts(updatedDrafts);
     } else {
+      if (
+        draftData.id === null &&
+        draftData.to === "" &&
+        draftData.subject === "" &&
+        draftData.message === ""
+      )
+        return;
       const newDraft = {
         ...draftData,
         id: Date.now(), //! Use timestamp as unique ID

@@ -1,10 +1,32 @@
 import { IoMdClose } from "react-icons/io";
-import EmailSuccessAnimation from "../EmailSuccessAnimation"; // Import the new component
+import { FaCircle } from "react-icons/fa";
+import EmailSuccessAnimation from "../EmailSuccessAnimation";
 import { useUI } from "../../../context/UIContext";
 import { useEmailsContext } from "../../../context/EmailsContext";
 import { useEmail } from "../../../hooks/useEmail";
 import EmailEditor from "./EmailEditor";
 import PropTypes from "prop-types";
+
+const PRIORITY_OPTIONS = [
+  {
+    value: "Minor",
+    label: "Low Priority",
+    color: "text-blue-500",
+    bgColor: "bg-blue-50",
+  },
+  {
+    value: "Medium",
+    label: "Medium Priority",
+    color: "text-yellow-500",
+    bgColor: "bg-yellow-50",
+  },
+  {
+    value: "Major",
+    label: "High Priority",
+    color: "text-red-500",
+    bgColor: "bg-red-50",
+  },
+];
 
 const SendMail = ({ draftToEdit = null, onCancel }) => {
   const {
@@ -26,14 +48,7 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // const emailContent = editorInstanceRef.current.getMarkdown();
-
-      //TODO: await MailService.sendMail({
-      //   ...formData,
-      //   message: emailContent
-      // });
-
-      // If this was a draft, delete it after sending
+      // Existing send mail logic
       if (formData.id) {
         deleteDraft(formData.id);
       }
@@ -91,6 +106,37 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
             />
           </div>
 
+          {/* Improved Priority Selector */}
+          <div className="border-b flex items-center gap-3 pb-1">
+            <span>Priority</span>
+            <div className="flex items-center space-x-2">
+              {PRIORITY_OPTIONS.map((option) => (
+                <label
+                  key={option.value}
+                  className={`
+                    flex items-center gap-1 px-2 py-1 rounded-full cursor-pointer
+                    ${
+                      formData.priority === option.value
+                        ? `${option.bgColor} ${option.color} font-semibold`
+                        : "hover:bg-gray-100"
+                    }
+                  `}
+                >
+                  <input
+                    type="radio"
+                    name="priority"
+                    value={option.value}
+                    checked={formData.priority === option.value}
+                    onChange={handleInputChange}
+                    className="hidden"
+                  />
+                  <FaCircle className={`w-3 h-3 ${option.color}`} />
+                  {option.label.split(" ")[0]}
+                </label>
+              ))}
+            </div>
+          </div>
+
           <div className="form-group">
             <label>Message</label>
             <EmailEditor
@@ -125,6 +171,7 @@ SendMail.propTypes = {
     to: PropTypes.string,
     subject: PropTypes.string,
     message: PropTypes.string,
+    priority: PropTypes.oneOf(["low", "medium", "high"]),
   }),
   onCancel: PropTypes.func,
 };

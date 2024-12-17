@@ -23,6 +23,11 @@ const MailListItem = ({
         </div>
 
         <div className="flex-grow flex items-center gap-2" onClick={onClick}>
+          <img
+            src={PriorityIcons[item.priority]}
+            alt={`${item.priority} priority`}
+            className="w-5 h-5"
+          />
           <div className="flex-grow">
             <p className="font-semibold">{item.to || "No recipient"}</p>
             <p className="text-sm text-gray-600 truncate">

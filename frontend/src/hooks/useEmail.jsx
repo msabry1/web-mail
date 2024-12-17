@@ -12,6 +12,7 @@ export const useEmail = (draftToEdit = null) => {
       to: "",
       subject: "",
       message: "",
+      priority: "Minor"
     }),
     []
   );
