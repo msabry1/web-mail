@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { useUser } from "./UserContext";
 import PropTypes from "prop-types";
 
 export const PriorityIcons = {
@@ -16,16 +17,8 @@ export const EmailsProvider = ({ children }) => {
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentFolder, setCurrentFolder] = useState("inbox");
-  const [drafts, setDrafts] = useState(() => {
-    //! Initializing drafts from localStorage on first render
-    try {
-      const savedDrafts = localStorage.getItem("emailDrafts");
-      return savedDrafts ? JSON.parse(savedDrafts) : [];
-    } catch (error) {
-      console.error("Error parsing drafts from localStorage:", error);
-      return [];
-    }
-  });
+  const [drafts, setDrafts] = useState();
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchedEmails = [
@@ -64,8 +57,26 @@ export const EmailsProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("emailDrafts", JSON.stringify(drafts));
-  }, [drafts]);
+    if (user?.username) {
+      try {
+        const savedDrafts = JSON.parse(
+          localStorage.getItem(`${user.username}-emailDrafts`) ?? "[]"
+        );
+        setDrafts(savedDrafts);
+      } catch (error) {
+        console.error("Error parsing drafts from localStorage:", error);
+      }
+    }
+  }, [user?.username]);
+
+  useEffect(() => {
+    if (user?.username) {
+      localStorage.setItem(
+        `${user.username}-emailDrafts`,
+        JSON.stringify(drafts)
+      );
+    }
+  }, [user?.username, drafts]);
 
   useEffect(() => {
     setSelectedEmails([]);
@@ -131,12 +142,34 @@ export const EmailsProvider = ({ children }) => {
       };
       setDrafts([...drafts, newDraft]);
     }
-    localStorage.setItem("emailDrafts", JSON.stringify(drafts));
+    console.log("username", user.username);
+    localStorage.setItem(
+      `${user.username}-emailDrafts`,
+      JSON.stringify(drafts)
+    );
   };
 
-  const deleteDraft = (draftId) => {
-    setDrafts(drafts.filter((draft) => draft.id !== draftId));
+  const deleteDrafts = (draftIds) => {
+    setSelectedEmails(selectedEmails.filter((id) => !draftIds.includes(id)));
+    setDrafts(drafts.filter((draft) => !draftIds.includes(draft.id)));
   };
+  //TODO: update to backend
+  const deleteEmails = (emailIds) => {
+    setSelectedEmails(
+      selectedEmails.filter((email) => !emailIds.includes(email.id))
+    );
+    setEmails((prev) => prev.filter((email) => !emailIds.includes(email.id)));
+  };
+
+  const toggleStarEmail = (email, e) => {
+    //TODO: update to backend
+    e.stopPropagation(); // Prevent email from being opened when clicking star
+    email.starred = !email.starred;
+    setEmails((prevEmails) =>
+      prevEmails.map((e) => (e.id === email.id ? email : e))
+    );
+  };
+
   return (
     <EmailsContext.Provider
       value={{
@@ -144,7 +177,7 @@ export const EmailsProvider = ({ children }) => {
         setEmails,
         drafts,
         saveDraft,
-        deleteDraft,
+        deleteDrafts,
         selectedEmails,
         setSelectedEmails,
         toggleEmailSelection,
@@ -155,11 +188,17 @@ export const EmailsProvider = ({ children }) => {
         filter,
         currentFolder,
         setCurrentFolder,
+        toggleStarEmail,
+        deleteEmails,
       }}
     >
       {children}
     </EmailsContext.Provider>
   );
+};
+
+EmailsProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 // Hook to use the EmailsContext
@@ -169,8 +208,4 @@ export const useEmailsContext = () => {
     throw new Error("useEmailsContext must be used within an EmailsProvider");
   }
   return context;
-};
-
-EmailsProvider.propTypes = {
-  children: PropTypes.node.isRequired,
 };

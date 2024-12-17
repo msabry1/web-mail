@@ -3,18 +3,15 @@ import PropTypes from "prop-types";
 const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    name: "Ahmed Mohsen",
+    username: "ahmed-mohsen",
+    image: "https://ui-avatars.com/api/?name=Ahmed+Mohsen",
+  });
   const [token, setToken] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
-  
+
   useEffect(() => {
-    setUser(
-      {
-        name: "Ahmed Mohsen",
-        username: "ahmed-mohsen",
-        image: "https://ui-avatars.com/api/?name=Ahmed+Mohsen",
-      }
-    )
     /*
     const storedToken = localStorage.getItem("token");
     if (storedToken) {

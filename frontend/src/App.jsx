@@ -9,7 +9,7 @@ import Login from "./components/login-signup/Login";
 import Signup from "./components/login-signup/Signup";
 import Home from "./components/my-ui/Home";
 import Body from "./components/my-ui/Body";
-import MailsList from "./components/mails/MailsList";
+import MailsList from "./components/mails/mails-list/MailsList";
 import MailDetails from "./components/mails/MailDetails";
 import PropTypes from "prop-types";
 
