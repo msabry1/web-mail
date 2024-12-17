@@ -11,7 +11,6 @@ const MailsList = () => {
   const navigate = useNavigate();
   const {
     emails,
-    drafts,
     selectedEmails,
     toggleEmailSelection,
     toggleSelectAll,
@@ -39,13 +38,13 @@ const MailsList = () => {
   };
 
   const handleFilterChange = (item, index) => {
+    console.log("Filtering by:", item, index);
     setActiveFilter(index);
     if (item === "drafts") {
       setCurrentFolder("drafts");
-    } else {
-      // For priority filters
-      setFilter(item);
     }
+    setFilter(item);
+    console.log(emails);
   };
 
   const handleDelete = () => {
@@ -56,12 +55,11 @@ const MailsList = () => {
     }
   };
 
-  const displayItems = currentFolder === "drafts" ? drafts : emails;
 
   //* for (select all) check box
   const isAllSelected = () => {
     if (currentFolder === "drafts")
-      return selectedEmails.length === drafts.length && selectedEmails > 0;
+      return selectedEmails.length === emails.length && selectedEmails > 0;
     return selectedEmails.length === emails.length && emails.length > 0;
   };
 
@@ -95,7 +93,7 @@ const MailsList = () => {
           </button>
         )}
       </div>
-      {displayItems.map((item) => (
+      {emails.map((item) => (
         <MailsListItem
           key={item.id}
           item={item}
@@ -110,7 +108,7 @@ const MailsList = () => {
         />
       ))}
       {/* No Items State */}
-      {displayItems.length === 0 && (
+      {emails.length === 0 && (
         <div className="text-center text-gray-500 py-8">
           {currentFolder === "drafts" ? "No drafts saved" : "No emails found"}
         </div>

@@ -2,6 +2,8 @@ import { useState, useCallback, useMemo } from "react";
 import { useEmailsContext } from "../context/EmailsContext";
 import { useUI } from "../context/UIContext";
 import { toast } from "sonner";
+import { PRIORITY_LEVELS } from "../constants/priorities";
+
 export const useEmail = (draftToEdit = null) => {
   const { saveDraft } = useEmailsContext();
   const { setComposing } = useUI();
@@ -12,7 +14,8 @@ export const useEmail = (draftToEdit = null) => {
       to: "",
       subject: "",
       message: "",
-      priority: "Medium",
+      priority: PRIORITY_LEVELS.MEDIUM,
+      attachments: [],
     }),
     []
   );
@@ -26,13 +29,8 @@ export const useEmail = (draftToEdit = null) => {
   const handleInputChange = useCallback(
     async (e) => {
       const { name, value } = e.target;
-      const isAddedAttachment = !formData.attachments || formData?.attachments?.length < value?.length;
-      console.log(
-        "updating draft",
-        isAddedAttachment,
-        value,
-        formData.attachments
-      );
+      const isAddedAttachment =
+        !formData.attachments || formData?.attachments?.length < value?.length;
       if (name === "attachments" && isAddedAttachment) {
         toast.warning("Attachments will not be saved in the draft.", {
           duration: 2000,
@@ -51,13 +49,14 @@ export const useEmail = (draftToEdit = null) => {
     setLoading(false);
   }, [initialData]);
 
-  const handleSaveDraft = (email) => {
-    console.log("Saving draft:", email);
-    saveDraft({
-      ...email,
-    });
-    setComposing(false);
-  };
+  const handleSaveDraft = useCallback(
+    (email) => {
+      console.log("Saving draft:", email);
+      saveDraft(email);
+      setComposing(false);
+    },
+    [saveDraft, setComposing]
+  );
 
   const handleSuccessClose = useCallback(() => {
     setShowSuccessAnimation(false);

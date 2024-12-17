@@ -4,6 +4,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
+import { ContactsProvider } from "./context/ContactsContext";
 import { useUser } from "./context/UserContext";
 import Login from "./components/login-signup/Login";
 import Signup from "./components/login-signup/Signup";
@@ -11,6 +12,7 @@ import Home from "./components/my-ui/Home";
 import Body from "./components/my-ui/Body";
 import MailsList from "./components/mails/mails-list/MailsList";
 import MailDetails from "./components/mails/MailDetails";
+import ContactsPage from "./components/ContactsPage";
 import PropTypes from "prop-types";
 import { Toaster } from "sonner";
 
@@ -37,7 +39,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Body />,
+        element: (
+          <ContactsProvider>
+            <Body />
+          </ContactsProvider>
+        ),
         children: [
           {
             path: "/",
@@ -46,6 +52,10 @@ const router = createBrowserRouter([
           {
             path: "/email/:id",
             element: <MailDetails />,
+          },
+          {
+            path: "/contacts",
+            element: <ContactsPage />,
           },
         ],
       },
@@ -77,12 +87,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
-      <Toaster
-        position="top-right"
-        richColors
-        expand={false}
-        className="toaster-container"
-      />
+      <Toaster position="top-center" richColors className="toaster-container" />
     </>
   );
 }

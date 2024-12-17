@@ -5,16 +5,16 @@ import Profile from "./Profile";
 import { useUI } from "../../context/UIContext";
 
 const Body = () => {
-  const { composing, profile } = useUI();
+  const { composing, profile, setComposing } = useUI();
   return (
-      <div className="flex h-screen ">
-        <Sidebar />
-        <div className="flex-grow overflow-hidden">
-          <Outlet />
-        </div>
-        {composing && <SendMail />}
-        {profile && <Profile />}
+    <div className="flex h-screen ">
+      <Sidebar />
+      <div className="flex-grow">
+        <Outlet />
       </div>
+      {composing && <SendMail onCancel={setComposing(false)} />}
+      {profile && <Profile />}
+    </div>
   );
 };
 

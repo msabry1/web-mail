@@ -1,5 +1,5 @@
 import { CheckSquare, Square, Star } from "lucide-react";
-import { PriorityIcons } from "../../../context/EmailsContext";
+import { PRIORITY_ICONS } from "../../../constants/priorities";
 // import { formatDate } from "../../../utils/dateFormatter";
 import PropTypes from "prop-types";
 
@@ -24,7 +24,7 @@ const MailListItem = ({
 
         <div className="flex-grow flex items-center gap-2" onClick={onClick}>
           <img
-            src={PriorityIcons[item.priority]}
+            src={PRIORITY_ICONS[item.priority]}
             alt={`${item.priority} priority`}
             className="w-5 h-5"
           />
@@ -54,7 +54,7 @@ const MailListItem = ({
 
       <div className="flex-grow flex items-center gap-2" onClick={onClick}>
         <img
-          src={PriorityIcons[item.priority]}
+          src={PRIORITY_ICONS[item.priority]}
           alt={`${item.priority} priority`}
           className="w-5 h-5"
         />
@@ -81,9 +81,7 @@ const MailListItem = ({
         </button>
 
         <div className="text-sm text-gray-500 mr-2">
-          {new Date(item?.createdAt?.seconds * 1000)
-                .toUTCString()
-                .slice(5, 11)}
+          {new Date(item.createdAt).toLocaleString()}
         </div>
       </div>
     </div>

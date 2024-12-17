@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { IoMdClose, IoMdAttach, IoMdTrash } from "react-icons/io";
-import { FaCircle } from "react-icons/fa";
+import { FaCircle, FaUserPlus } from "react-icons/fa";
 import EmailSuccessAnimation from "../EmailSuccessAnimation";
 import { useUI } from "../../../context/UIContext";
 import { useEmailsContext } from "../../../context/EmailsContext";
+import { useContacts } from "../../../context/ContactsContext"; // Assuming you have a contacts context
 import { useEmail } from "../../../hooks/useEmail";
 import EmailEditor from "./EmailEditor";
 import PropTypes from "prop-types";
@@ -44,8 +45,11 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
 
   const { setComposing } = useUI();
   const { deleteDrafts } = useEmailsContext();
+  const { contacts } = useContacts(); // Get contacts from context
 
   const [attachments, setAttachments] = useState(formData.attachments || []);
+  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   const handleFileSelect = (event) => {
     const newFiles = Array.from(event.target.files);
@@ -90,16 +94,28 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // TODO: Implement actual file upload logic
+      // Combine manually entered 'to' emails with selected contacts' emails
+      const recipientEmails = [
+        ...(formData.to ? [formData.to] : []),
+        ...selectedContacts.map((contact) => contact.email),
+      ].join(", ");
+
+      const updatedFormData = {
+        ...formData,
+        to: recipientEmails,
+      };
+
+      console.log("Sending mail to:", recipientEmails);
       console.log("Attachments to send:", attachments);
 
       if (formData.id) {
         deleteDrafts([formData.id]);
       }
-      console.log("sending mail");
+
       setShowSuccessAnimation(true);
       resetForm();
       setAttachments([]); // Clear attachments
+      setSelectedContacts([]); // Clear selected contacts
       setComposing(false);
     } catch (err) {
       console.error("Error sending email:", err);
@@ -109,6 +125,15 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
         onCancel();
       }, 1000);
     }
+  };
+
+  const handleContactSelect = (contact) => {
+    // Toggle contact selection
+    setSelectedContacts((prev) =>
+      prev.some((c) => c.id === contact.id)
+        ? prev.filter((c) => c.id !== contact.id)
+        : [...prev, contact]
+    );
   };
 
   return (
@@ -130,15 +155,45 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
         <form className="flex flex-col gap-3" onSubmit={sendMail}>
           <div className="border-b flex items-center gap-3 pb-1">
             <span>To</span>
-            <input
-              type="email"
-              name="to"
-              value={formData.to}
-              onChange={handleInputChange}
-              className="outline-none w-full"
-              required
-            />
+            <div className="flex items-center w-full gap-2">
+              <input
+                type="email"
+                name="to"
+                value={formData.to}
+                onChange={handleInputChange}
+                className="outline-none flex-grow"
+                placeholder="Enter email or select from contacts"
+              />
+              <button
+                type="button"
+                onClick={() => setIsContactModalOpen(true)}
+                className="text-blue-600 hover:bg-blue-50 p-1 rounded-full"
+              >
+                <FaUserPlus />
+              </button>
+            </div>
           </div>
+
+          {/* Selected Contacts Chips */}
+          {selectedContacts.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-2">
+              {selectedContacts.map((contact) => (
+                <div
+                  key={contact.id}
+                  className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm flex items-center"
+                >
+                  {contact.name}
+                  <button
+                    type="button"
+                    onClick={() => handleContactSelect(contact)}
+                    className="ml-2 text-blue-600"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
           <div className="border-b flex items-center gap-3 pb-1">
             <span>Subject</span>
             <input
@@ -229,6 +284,59 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
             />
           </div>
 
+          {isContactModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+              <div className="bg-white rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold">Select Contacts</h2>
+                  <button
+                    onClick={() => setIsContactModalOpen(false)}
+                    className="text-gray-600 hover:bg-gray-100 p-1 rounded-full"
+                  >
+                    <IoMdClose />
+                  </button>
+                </div>
+                {contacts.map((contact) => (
+                  <div
+                    key={contact.id}
+                    onClick={() => handleContactSelect(contact)}
+                    className={`
+                      flex items-center justify-between p-2 rounded-lg cursor-pointer
+                      ${
+                        selectedContacts.some((c) => c.id === contact.id)
+                          ? "bg-blue-100 text-blue-800"
+                          : "hover:bg-gray-100"
+                      }
+                    `}
+                  >
+                    <div>
+                      <div className="font-medium">{contact.name}</div>
+                      <div className="text-sm text-gray-600">
+                        {contact.email}
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={selectedContacts.some(
+                        (c) => c.id === contact.id
+                      )}
+                      readOnly
+                      className="form-checkbox"
+                    />
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setIsContactModalOpen(false)}
+                  className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg"
+                >
+                  Confirm Selection
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Existing Submit Button */}
           <div className="flex gap-2 items-center">
             <button
               type="submit"

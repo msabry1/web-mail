@@ -1,25 +1,24 @@
 import { useState } from "react";
-import { GoPencil, GoTrash } from "react-icons/go";
+import { GoPencil, GoTrash, GoPersonAdd } from "react-icons/go";
 import { FaRegStar } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import { VscSend } from "react-icons/vsc";
 import { useUI } from "../../context/UIContext";
 import { useEmailsContext } from "../../context/EmailsContext";
+import { useNavigate } from "react-router-dom";
 const Sidebar = () => {
+  const navigate = useNavigate();
   const { toggleComposing } = useUI();
   const { currentFolder, setCurrentFolder } = useEmailsContext();
   const [showFolders, setShowFolders] = useState(false);
 
-  // Function to handle menu item selection
   const handleMenuItemClick = async (key) => {
-    // Replace this with your specific logic
-    console.log("Selected menu item:", key);
     setCurrentFolder(key);
-
-    // You can add more actions here, like:
-    // - Filtering emails
-    // - Updating state
-    // - Calling a parent component method
+    if(key === "contacts")
+        navigate("/contacts");
+    else 
+        navigate("/");
+    //TODO: fetch emails for the selected folder
   };
 
   const menuItems = [
@@ -47,6 +46,11 @@ const Sidebar = () => {
       icon: <GoTrash />,
       label: "Trash",
       key: "trash",
+    },
+    {
+      icon: <GoPersonAdd />, // You'll need to import this icon
+      label: "Contacts",
+      key: "contacts",
     },
   ];
 
@@ -80,17 +84,11 @@ const Sidebar = () => {
             key={item.key}
             onClick={() => handleMenuItemClick(item.key)}
             className={`flex items-center gap-5 pl-5 pr-2 py-2 cursor-pointer rounded-r-full ${
-              currentFolder === item.key
-                ? "bg-gray-300"
-                : "hover:bg-gray-300"
+              currentFolder === item.key ? "bg-gray-300" : "hover:bg-gray-300"
             }`}
           >
             {item.icon}
-            <span
-              className={
-                currentFolder === item.key ? "font-semibold" : ""
-              }
-            >
+            <span className={currentFolder === item.key ? "font-semibold" : ""}>
               {item.label}
             </span>
           </div>
@@ -116,16 +114,12 @@ const Sidebar = () => {
               key={item.key}
               onClick={() => handleMenuItemClick(item.key)}
               className={`flex items-center gap-5 pl-5 pr-2 py-2 cursor-pointer rounded-r-full ${
-                currentFolder === item.key
-                  ? "bg-gray-300"
-                  : "hover:bg-gray-300"
+                currentFolder === item.key ? "bg-gray-300" : "hover:bg-gray-300"
               }`}
             >
               {item.icon}
               <span
-                className={
-                  currentFolder === item.key ? "font-semibold" : ""
-                }
+                className={currentFolder === item.key ? "font-semibold" : ""}
               >
                 {item.label}
               </span>

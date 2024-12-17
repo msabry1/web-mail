@@ -1,4 +1,4 @@
-import { PriorityIcons } from "../../../context/EmailsContext";
+import { PRIORITY_ICONS } from "../../../constants/priorities";
 
 const MailsListHeader = ({ priorityOptions, activeFilter, onFilterChange }) => {
   return (
@@ -14,7 +14,7 @@ const MailsListHeader = ({ priorityOptions, activeFilter, onFilterChange }) => {
           onClick={() => onFilterChange(item, index)}
         >
           <img
-            src={item === "drafts" ? "/draft.png" : PriorityIcons[item]}
+            src={item === "drafts" ? "/draft.png" : PRIORITY_ICONS[item]}
             alt={item}
             width={20}
           />
