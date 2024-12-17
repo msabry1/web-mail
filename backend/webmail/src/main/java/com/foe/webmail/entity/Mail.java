@@ -1,5 +1,6 @@
 package com.foe.webmail.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +29,7 @@ public class Mail extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sender_id")
+    @JsonIgnore
     private User sender;
 
 
@@ -38,5 +40,9 @@ public class Mail extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "receiver_id", referencedColumnName = "id")
     )
     private List<User> receivers;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "mails")
+    private List<Folder> folders;
 }
 

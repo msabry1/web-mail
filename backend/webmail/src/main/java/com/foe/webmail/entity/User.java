@@ -1,6 +1,8 @@
 package com.foe.webmail.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,5 +26,5 @@ public class User extends BaseEntity {
     private List<Folder> folders;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "sender")
-    private List<Mail> mails;
+    private List<Mail> sentMails;
 }
