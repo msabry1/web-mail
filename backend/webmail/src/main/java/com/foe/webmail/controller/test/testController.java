@@ -1,10 +1,10 @@
-package com.foe.webmail;
+package com.foe.webmail.controller.test;
 
 
-import com.foe.webmail.dto.AddMailToFolderDto;
+import com.foe.webmail.dto.AddMailToFolderDTO;
 import com.foe.webmail.entity.*;
 import com.foe.webmail.repository.*;
-import com.foe.webmail.service.TestService;
+import com.foe.webmail.service.test.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,7 +93,7 @@ public class testController {
     }
 
     @PostMapping("addMailToFolder")
-    public AddMailToFolderDto addMailToFolder(@RequestBody AddMailToFolderDto dto) {
+    public AddMailToFolderDTO addMailToFolder(@RequestBody AddMailToFolderDTO dto) {
         foldersRepository.addMailToFolder(dto.getFolderId(), dto.getMailId());
         return dto;
     }

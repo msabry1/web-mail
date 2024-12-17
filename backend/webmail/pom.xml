@@ -60,6 +60,11 @@
 			<version>1.5.3.Final</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.10.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

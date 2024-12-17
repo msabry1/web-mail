@@ -8,12 +8,12 @@ import java.util.List;
 
 @Data
 public class MailPreviewDTO {
-
     private Long id;
-    private String senderOrReceiver;
+    private String sender;
     private String subject;
     private LocalDateTime date;
     private String importance;
+    private Boolean isSeen;
+    private Boolean isStared;
     private List<String> receivers;
-
 }

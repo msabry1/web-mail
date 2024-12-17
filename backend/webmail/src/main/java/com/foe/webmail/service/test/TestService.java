@@ -1,4 +1,4 @@
-package com.foe.webmail.service;
+package com.foe.webmail.service.test;
 
 import com.foe.webmail.entity.Mail;
 import com.foe.webmail.repository.MailRepository;

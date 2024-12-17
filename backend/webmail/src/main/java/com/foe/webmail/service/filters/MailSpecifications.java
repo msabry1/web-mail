@@ -63,4 +63,5 @@ public class MailSpecifications {
             return cb.equal(root.get("importance"), importance);
         };
     }
+
 }
