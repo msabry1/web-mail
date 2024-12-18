@@ -37,7 +37,6 @@ public class testController {
 
     @PostMapping("test")
     public User test(@RequestBody User user) {
-        user.setCreatedAt(LocalDateTime.now());
         userRepository.save(user);
         return user;
     }
@@ -50,7 +49,6 @@ public class testController {
 
     @PostMapping("mail")
     public Mail test3(@RequestBody Mail mail) {
-        mail.setCreatedAt(LocalDateTime.now());
         Optional<User> sender = userRepository.findById(Long.valueOf("1"));
         mail.setSender(sender.get());
         Optional<User> receiver = userRepository.findById(Long.valueOf("2"));
@@ -66,7 +64,6 @@ public class testController {
     public Folder test4(@RequestBody Folder folder) {
         Optional<User> user = userRepository.findById(Long.valueOf("1"));
         folder.setUser(user.get());
-        folder.setCreatedAt(LocalDateTime.now());
         folder.setMails(mailRepository.findAll());
         foldersRepository.save(folder);
         return folder;
@@ -76,9 +73,7 @@ public class testController {
     public Contact test5(@RequestBody Contact contact) {
         Optional<User> user = userRepository.findById(Long.valueOf("1"));
         contact.setUser(user.get());
-        contact.setCreatedAt(LocalDateTime.now());
         for(ContactEmails c : contact.getEmails()){
-            c.setCreatedAt(LocalDateTime.now());
             c.setContact(contact);
         }
         contactRepository.save(contact);
@@ -100,7 +95,6 @@ public class testController {
 
     @PostMapping("att")
     public MailAttachment addAttachment(@RequestBody MailAttachment attachment){
-        attachment.setCreatedAt(LocalDateTime.now());
         attachment.setMail(mailRepository.findById(Long.valueOf("11")).get());
         mailAttachmentRepository.save(attachment);
         return attachment;

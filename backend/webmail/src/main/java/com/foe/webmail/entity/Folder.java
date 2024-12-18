@@ -9,10 +9,9 @@ import java.util.List;
 
 
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class Folder extends BaseEntity {
+public class Folder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,5 +32,6 @@ public class Folder extends BaseEntity {
             joinColumns = { @JoinColumn(name = "folder_id", referencedColumnName = "id") },
             inverseJoinColumns = {@JoinColumn(name = "mail_id", referencedColumnName = "id")}
     )
+    @JsonIgnore
     private List<Mail> mails;
 }

@@ -6,11 +6,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name = "Contact_emails")
-public class ContactEmails extends BaseEntity {
+public class ContactEmails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
