@@ -1,16 +1,40 @@
 package com.foe.webmail.mappers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foe.webmail.dto.UserDTO;
 import com.foe.webmail.entity.User;
-import org.mapstruct.*;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
-public interface UserMapper {
+import java.util.List;
+import java.util.stream.Collectors;
 
-    @Mapping(target = "foldersNames", expression = "java(user.getFolders() != null ? user.getFolders().stream().map(folder -> folder.getName()).collect(Collectors.toList()) : null)")
-    UserDTO toDto(User user);
+@Component
+public class UserMapper {
 
-    @Mapping(target = "folders", ignore = true)
-    @Mapping(target = "sentMails", ignore = true)
-    User toEntity(UserDTO userDto);
+    private final ObjectMapper objectMapper;
+
+    public UserMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+
+    public UserDTO userToUserDTO(User user) {
+
+        UserDTO userDTO = objectMapper.convertValue(user, UserDTO.class);
+
+
+        if (user.getFolders() != null) {
+            List<String> folderNames = user.getFolders().stream()
+                    .map(folder -> folder.getName())
+                    .collect(Collectors.toList());
+            userDTO.setFoldersNames(folderNames);
+        }
+
+        return userDTO;
+    }
+
+    public User userDTOToUser(UserDTO userDTO) {
+
+        return objectMapper.convertValue(userDTO, User.class);
+    }
 }

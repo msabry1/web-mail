@@ -1,38 +1,49 @@
 package com.foe.webmail.mappers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foe.webmail.dto.MailPreviewDTO;
 import com.foe.webmail.entity.Mail;
 import com.foe.webmail.entity.User;
-import org.mapstruct.*;
+import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
-public interface MailPreviewMapper {
+@Component
+public class MailPreviewMapper {
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Mapping(target = "sender", source = "sender", qualifiedByName = "mapSender")
-    @Mapping(target = "receivers", source = "receivers", qualifiedByName = "mapReceivers")
-    MailPreviewDTO toMailPreviewDTO(Mail mail);
+    public static MailPreviewDTO toMailPreviewDTO(Mail mail) {
+        MailPreviewDTO mailPreviewDTO = new MailPreviewDTO();
 
+        mailPreviewDTO.setId(mail.getId());
+        mailPreviewDTO.setSender(mail.getSender().getUsername());
 
-    @Mapping(target = "sender", ignore = true)
-    @Mapping(target = "receivers", ignore = true)
-    @Mapping(target = "attachments", ignore = true)
-    @Mapping(target = "folders", ignore = true)
-    Mail toMailEntity(MailPreviewDTO dto);
+        mailPreviewDTO.setSubject(mail.getSubject());
+        mailPreviewDTO.setDate(mail.getDate());
+        mailPreviewDTO.setImportance(mail.getImportance());
+        mailPreviewDTO.setIsSeen(mail.getIsSeen());
+        mailPreviewDTO.setIsStared(mail.getIsStared());
 
+        List<String> receiverUsernames = mail.getReceivers().stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList());
+        mailPreviewDTO.setReceivers(receiverUsernames);
 
-    @Named("mapSender")
-    default String mapSender(User sender) {
-        return sender != null ? sender.getUsername() : null;
+        return mailPreviewDTO;
     }
 
-    @Named("mapReceivers")
-    default List<String> mapReceivers(List<User> receivers) {
-        return receivers != null
-                ? receivers.stream().map(User::getUsername).collect(Collectors.toList())
-                : null;
+    public static Mail mapToMail(MailPreviewDTO mailPreviewDTO) {
+        Mail mail = new Mail();
+        mail.setId(mailPreviewDTO.getId());
+        mail.setSubject(mailPreviewDTO.getSubject());
+        mail.setDate(mailPreviewDTO.getDate());
+        mail.setImportance(mailPreviewDTO.getImportance());
+        mail.setIsSeen(mailPreviewDTO.getIsSeen());
+        mail.setIsStared(mailPreviewDTO.getIsStared());
+
+        return mail;
     }
 }

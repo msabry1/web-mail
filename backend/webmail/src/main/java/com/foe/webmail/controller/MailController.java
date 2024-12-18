@@ -4,32 +4,33 @@ package com.foe.webmail.controller;
 import com.foe.webmail.dto.FullMailDTO;
 import com.foe.webmail.dto.MailFilterDTO;
 import com.foe.webmail.dto.MailPreviewDTO;
-import com.foe.webmail.service.IMailFilterService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import com.foe.webmail.service.mailService.MailServiceFacade;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class MailController {
 
-    IMailFilterService mailService;
+    MailServiceFacade mailServiceFacade;
 
-    @Autowired
-    MailController(IMailFilterService mailService) {
-        this.mailService = mailService;
+    MailController(MailServiceFacade mailServiceFacade) {
+        this.mailServiceFacade = mailServiceFacade;
     }
 
     @GetMapping("mails")
     public List<MailPreviewDTO> mails(@RequestBody MailFilterDTO mailFilterDTO) {
-        return mailService.getMailsPreviewDtoByFilter(mailFilterDTO);
+        return mailServiceFacade.getMailsPreviewDtoByFilter(mailFilterDTO);
     }
 
     @GetMapping("mails/{id}")
     public FullMailDTO mails(@PathVariable Long id) {
-        m
+        return mailServiceFacade.getFullMailById(id);
     }
+
+    @DeleteMapping("mails/{id}")
+    public void deleteMail(@PathVariable Long id) {
+        mailServiceFacade.DeleteMail(id);
+    }
+
 }

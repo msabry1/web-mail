@@ -2,7 +2,7 @@ package com.foe.webmail.service.test;
 
 import com.foe.webmail.entity.Mail;
 import com.foe.webmail.repository.MailRepository;
-import com.foe.webmail.service.filters.MailSpecifications;
+import com.foe.webmail.service.mailService.filters.MailSpecifications;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
