@@ -1,76 +1,76 @@
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 import PropTypes from "prop-types";
 import { PRIORITY_LEVELS } from "../constants/priorities";
 import { saveToLocalStorage, getFromLocalStorage } from "../utils/localStorage";
-
+import MailService from "../services/MailService";
 const EmailsContext = createContext();
 
 export const EmailsProvider = ({ children }) => {
   const [emails, setEmails] = useState([]);
+  const [filteredEmails, setFilteredEmails] = useState([]);
   const [selectedEmails, setSelectedEmails] = useState([]);
-  const [filter, setFilter] = useState(PRIORITY_LEVELS.ALL);
+  const [priority, setPriority] = useState(PRIORITY_LEVELS.ALL);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentFolder, setCurrentFolder] = useState("inbox");
   const [drafts, setDrafts] = useState();
   const { user } = useUser();
+  const [filter, setFilter] = useState({
+    subject: "",
+    body: "",
+    date: null,
+    attachmentName: "",
+    folder: "",
+  });
 
   useEffect(() => {
-    const fetchedEmails = [
-      {
-        id: 1,
-        to: "john.doe@example.com",
-        subject: "Meeting Reminder",
-        message:
-          "Don't forget about the meeting at 10am. this is the image in the attachments but viewed in markdown ![image](https://webmail-attachments.s3.il-central-1.amazonaws.com/3eeb7cc8-e2fd-4156-8f12-5a5b69a6524c_image-7.png)",
-        date: new Date(),
-        priority: PRIORITY_LEVELS.HIGH,
-        attachments: [
-          {
-            name: "Meeting Agenda",
-            url: "https://webmail-attachments.s3.il-central-1.amazonaws.com/470bf745-19a9-41e9-af26-0f5945fb8366_mvnw.cmd",
-            size: 524288, //! size in bytes
-            id: 1,
-          },
-          {
-            name: "graph.png",
-            url: "https://webmail-attachments.s3.il-central-1.amazonaws.com/3eeb7cc8-e2fd-4156-8f12-5a5b69a6524c_image-7.png",
-            size: 524288,
-            id: 2,
-          },
-          {
-            name: "file.pdf",
-            url: "https://webmail-attachments.s3.il-central-1.amazonaws.com/35c1bf74-5358-4112-8d73-c61f77664d0e_Transcript.pdf+.pdf",
-            size: 524288,
-            id: 3,
-          },
-        ],
-        read: false,
-        starred: false,
-      },
-      {
-        id: 2,
-        to: "jane.doe@example.com",
-        subject: "Promotion Offer",
-        message: "Get 50% off on your next purchase.",
-        date: new Date(),
-        priority: PRIORITY_LEVELS.LOW,
-        read: false,
-        starred: true,
-      },
-      {
-        id: 3,
-        to: "support@company.com",
-        subject: "System Update Notification",
-        message: "Important system maintenance scheduled.",
-        date: new Date(),
-        priority: PRIORITY_LEVELS.MEDIUM,
-        read: false,
-        starred: true,
-      },
-    ];
-    setEmails(fetchedEmails);
-  }, []);
+    const fetchFilteredEmails = async () => {
+      try {
+        let filterDTO = filter;
+        if (currentFolder === "sent")
+          (filterDTO.sender = `${user?.username}`),
+            (filterDTO.receiver =
+              filterDTO.receiver == user?.username ? "" : filterDTO.receiver);
+        else
+          (filterDTO.receiver = `${user?.username}`),
+            (filterDTO.sender =
+              filterDTO.sender == user?.username ? "" : filterDTO.sender);
+
+        console.log("Filter DTO:", filterDTO, filter);
+        let emailsToFilter = await MailService.fetchEmails(filterDTO);
+        console.log("Filtered emails:", emailsToFilter);
+
+        if (currentFolder === "starred") {
+          emailsToFilter = emailsToFilter.filter((email) => email.starred);
+        } else if (currentFolder === "drafts") {
+          emailsToFilter = drafts;
+        } else if (currentFolder !== "inbox" && currentFolder !== "sent") {
+          emailsToFilter = emails.filter(
+            (email) => email.folder === currentFolder
+          );
+        }
+
+        const result = emailsToFilter.filter((email) => {
+          const matchesSearch =
+            email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.to.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.body.toLowerCase().includes(searchQuery.toLowerCase());
+
+          const matchesPriority =
+            priority === "All" ||
+            email.priority.toUpperCase() === priority.toUpperCase();
+
+          return matchesSearch && matchesPriority;
+        });
+
+        setFilteredEmails(result);
+      } catch (error) {
+        console.error("Error fetching filtered emails:", error);
+      }
+    };
+
+    fetchFilteredEmails();
+  }, [emails, searchQuery, priority, currentFolder, drafts, filter, user]);
 
   //* Load drafts from localStorage when username changes
   useEffect(() => {
@@ -89,30 +89,7 @@ export const EmailsProvider = ({ children }) => {
 
   useEffect(() => {
     setSelectedEmails([]);
-  }, [filter, searchQuery, currentFolder]);
-
-  const filteredEmails = useMemo(() => {
-    let emailsToFilter = emails;
-    console.log("Current folder:", currentFolder);
-    if (currentFolder === "starred") {
-      emailsToFilter = emails.filter((email) => email.starred);
-    } else if (currentFolder === "drafts") {
-      emailsToFilter = drafts;
-    } else if (currentFolder !== "inbox") {
-      emailsToFilter = emails.filter((email) => email.folder === currentFolder);
-    }
-
-    return emailsToFilter.filter((email) => {
-      const matchesSearch =
-        email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        email.to.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        email.message.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesPriority = filter === "All" || email.priority === filter;
-
-      return matchesSearch && matchesPriority;
-    });
-  }, [emails, searchQuery, filter, currentFolder, drafts]);
+  }, [priority, searchQuery, currentFolder]);
 
   const toggleEmailSelection = (emailId) => {
     setSelectedEmails((prev) =>
@@ -173,8 +150,11 @@ export const EmailsProvider = ({ children }) => {
     setSelectedEmails(selectedEmails.filter((id) => !draftIds.includes(id)));
     setDrafts(drafts.filter((draft) => !draftIds.includes(draft.id)));
   };
-  //TODO: update to backend
-  const deleteEmails = (emailIds) => {
+  const deleteEmails = async (emailIds) => {
+    // console.log("Deleting emails:", emailIds);
+    // await emailIds.forEach((e) => {
+    //   MailService.deleteEmail(e);
+    // });
     setSelectedEmails(
       selectedEmails.filter((email) => !emailIds.includes(email.id))
     );
@@ -203,12 +183,13 @@ export const EmailsProvider = ({ children }) => {
         toggleSelectAll,
         setSearchQuery,
         searchQuery,
-        setFilter,
-        filter,
+        setPriority,
+        priority,
         currentFolder,
         setCurrentFolder,
         toggleStarEmail,
         deleteEmails,
+        setFilter,
       }}
     >
       {children}

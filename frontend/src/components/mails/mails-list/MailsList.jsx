@@ -16,7 +16,7 @@ const MailsList = () => {
     toggleSelectAll,
     currentFolder,
     setCurrentFolder,
-    setFilter,
+    setPriority,
     deleteEmails,
     deleteDrafts,
     toggleStarEmail,
@@ -33,6 +33,7 @@ const MailsList = () => {
       setComposing(false);
       setEditingDraft(email);
     }
+    
     // Placeholder for email navigation
     else navigate(`/email/${email.id}`);
   };
@@ -43,7 +44,7 @@ const MailsList = () => {
     if (item === "drafts") {
       setCurrentFolder("drafts");
     }
-    setFilter(item);
+    setPriority(item);
     console.log(emails);
   };
 
@@ -55,13 +56,13 @@ const MailsList = () => {
     }
   };
 
-
   //* for (select all) check box
   const isAllSelected = () => {
     if (currentFolder === "drafts")
       return selectedEmails.length === emails.length && selectedEmails > 0;
     return selectedEmails.length === emails.length && emails.length > 0;
   };
+  console.log("selected emails",emails);
 
   return (
     <div className="bg-white rounded-lg flex flex-col w-full lg:mr-5">
@@ -113,7 +114,7 @@ const MailsList = () => {
           {currentFolder === "drafts" ? "No drafts saved" : "No emails found"}
         </div>
       )}
-      
+
       {editingDraft && (
         <SendMail
           draftToEdit={editingDraft}

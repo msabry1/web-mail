@@ -10,10 +10,11 @@ import {
 } from "react-icons/fa";
 import { useEmailsContext } from "../../context/EmailsContext";
 import { useParams } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import Viewer from "@toast-ui/editor/dist/toastui-editor-viewer";
 import PropTypes from "prop-types";
+import MailService from "../../services/MailService";
 
 const FileIcon = ({ fileName }) => {
   const extension = fileName.split(".").pop().toLowerCase();
@@ -42,20 +43,34 @@ const MailDetails = () => {
   const { emails, setEmails } = useEmailsContext();
   const navigate = useNavigate();
   const id = useParams().id;
-  const email = emails.filter((email) => email.id == id)[0];
+  const [email, setEmail] = useState(
+    emails.filter((email) => email.id == id)[0]
+  );
   const viewerDiv = useRef(null);
   const viewerInstanceRef = useRef(null);
-
+  const [content, setContent] = useState(email?.body || "");
   useEffect(() => {
-    if (email && !email.read) {
-      email.read = true;
+    if (email && !email.isRead) {
+      // Use immutable updates to avoid unexpected re-renders
       setEmails((prevEmails) =>
-        prevEmails.map((e) => (e.id === email.id ? email : e))
+        prevEmails.map((e) => (e.id === email.id ? { ...e, isRead: true } : e))
       );
     }
-  }, [email, emails, setEmails]);
+  }, [setEmails, email]);
 
-  const content = email?.message || "";
+  useEffect(() => {
+    console.log("id changed", email);
+    const fetchEmail = async () => {
+      const data = await MailService.fetchEmail(id);
+      setContent(data.body);
+      setEmail((prevEmail) => ({
+        ...prevEmail,
+        attachments: data.attachments,
+      }));
+    };
+
+    fetchEmail();
+  }, [id]);
 
   useEffect(() => {
     if (viewerDiv.current && !viewerInstanceRef.current && content) {

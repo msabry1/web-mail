@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
-import { fetchUserById } from "../services/UserService";
+import UserService from "../services/UserService";
 const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
@@ -11,17 +11,19 @@ export const UserProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const data = await fetchUserById(1);
+      const data = await UserService.fetchUserById(1);
 
       // localStorage.setItem("token", data.token);
       // setToken(data.token);
       setIsAuthenticated(true);
       setUser({
-        name: `${data.firstName} ${data.lastName}`,
-        username: data.username,
-        image: `https://ui-avatars.com/api/?name=${data.firstName}+${data.lastName}`,
+        name: `${data?.firstName || ""} ${data?.lastName || ""}`.trim(),
+        username: data?.username,
+        image:
+          data?.firstName || data?.lastName
+            ? `https://ui-avatars.com/api/?name=${data.firstName}+${data.lastName}`
+            : `/default-avatar.jpg`,
       });
-      console.log("user folders", data.foldersNames);
       setUserFolders(data.foldersNames);
     } catch (error) {
       console.error("Login failed", error);

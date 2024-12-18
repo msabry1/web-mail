@@ -1,6 +1,6 @@
 import { CheckSquare, Square, Star } from "lucide-react";
 import { PRIORITY_ICONS } from "../../../constants/priorities";
-// import { formatDate } from "../../../utils/dateFormatter";
+import { useEmailsContext } from "../../../context/EmailsContext";
 import PropTypes from "prop-types";
 
 const MailListItem = ({
@@ -11,6 +11,7 @@ const MailListItem = ({
   onStar,
   isDraft,
 }) => {
+  const { currentFolder } = useEmailsContext();
   if (isDraft) {
     return (
       <div
@@ -54,17 +55,19 @@ const MailListItem = ({
 
       <div className="flex-grow flex items-center gap-2" onClick={onClick}>
         <img
-          src={PRIORITY_ICONS[item.priority]}
+          src={PRIORITY_ICONS[item.priority.toUpperCase()]}
           alt={`${item.priority} priority`}
           className="w-5 h-5"
         />
         <div className="flex-grow">
           <p
             className={`font-semibold ${
-              !item.read ? "text-black" : "text-gray-500"
+              !item.isRead ? "text-black" : "text-gray-500"
             }`}
           >
-            {item.to}
+            {currentFolder === "sent"
+              ? item.receivers.join(", ")
+              : item.sender}
           </p>
           <p className="text-sm text-gray-600 truncate">{item.subject}</p>
         </div>

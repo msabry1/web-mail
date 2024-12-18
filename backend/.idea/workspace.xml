@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="83ac8036-c27a-449a-bdb9-7056353268f6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/mails/mails-list/MailsListItem.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/mails/mails-list/MailsListItem.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/my-ui/Body.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/my-ui/Body.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/context/EmailsContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/context/EmailsContext.jsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="InvalidFacetManager">
+    <ignored-facets>
+      <facet id="webmail/invalid/JPA" />
+    </ignored-facets>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2q4i2ixyGEnYITdvKfgsKljWgns" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.WebmailApplication.executor": "Run",
+    "JUnit.MailMapperTest.executor": "Run",
+    "JUnit.MailMapperTest.testToMailEntity.executor": "Run",
+    "JUnit.WebmailApplicationTests.executor": "Run",
+    "JUnit.com.foe.webmail.mappers in webmail.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.WebmailApplication.executor": "Run",
+    "com.codeium.enabled": "true",
+    "git-widget-placeholder": "frontend__dev",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/huthaifa/repos/CSED-2/oop/web-mail/backend/webmail",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
+    "settings.editor.splitter.proportion": "0.2947053",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/com/foe/webmail/repository" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.WebmailApplication">
+    <configuration name="WebmailApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.foe.webmail.WebmailApplication" />
+      <module name="webMail" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.foe.webmail.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MailMapperTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="webmail" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.foe.webmail.mappertest.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.foe.webmail.mappertest" />
+      <option name="MAIN_CLASS_NAME" value="com.foe.webmail.mappertest.MailMapperTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MailMapperTest.testToMailEntity" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="webmail" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.foe.webmail.mappertest.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.foe.webmail.mappertest" />
+      <option name="MAIN_CLASS_NAME" value="com.foe.webmail.mappertest.MailMapperTest" />
+      <option name="METHOD_NAME" value="testToMailEntity" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WebmailApplicationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="webmail" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.foe.webmail.controller.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.foe.webmail" />
+      <option name="MAIN_CLASS_NAME" value="com.foe.webmail.WebmailApplicationTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="com.foe.webmail.mappers in webmail" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="webmail" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.foe.webmail.mappers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.foe.webmail.mappers" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WebmailApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <envs>
+        <env name="DB_PASSWORD" value="dL1zTX1hfnmLEhFsAkHd" />
+        <env name="DB_URL" value="jdbc:mysql://webmail-csed-27.cfgqeyc4473i.il-central-1.rds.amazonaws.com/webmail" />
+        <env name="DB_USERNAME" value="webmail" />
+      </envs>
+      <module name="webmail" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.foe.webmail.WebmailApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.WebmailApplication" />
+        <item itemvalue="JUnit.com.foe.webmail.mappers in webmail" />
+        <item itemvalue="JUnit.MailMapperTest" />
+        <item itemvalue="JUnit.WebmailApplicationTests" />
+        <item itemvalue="JUnit.MailMapperTest.testToMailEntity" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="83ac8036-c27a-449a-bdb9-7056353268f6" name="Changes" comment="" />
+      <created>1733928042693</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1733928042693</updated>
+      <workItem from="1733928044261" duration="12059000" />
+      <workItem from="1734001418317" duration="6002000" />
+      <workItem from="1734012268699" duration="5312000" />
+      <workItem from="1734088776034" duration="1813000" />
+      <workItem from="1734090595501" duration="2051000" />
+      <workItem from="1734092693258" duration="137000" />
+      <workItem from="1734093003928" duration="271000" />
+      <workItem from="1734093276144" duration="40000" />
+      <workItem from="1734093321902" duration="120000" />
+      <workItem from="1734093456919" duration="2780000" />
+      <workItem from="1734115401579" duration="1000" />
+      <workItem from="1734115727016" duration="6020000" />
+      <workItem from="1734121758075" duration="2669000" />
+      <workItem from="1734164826558" duration="11513000" />
+      <workItem from="1734358044268" duration="19000" />
+      <workItem from="1734358069788" duration="1390000" />
+      <workItem from="1734387926448" duration="4274000" />
+      <workItem from="1734445294808" duration="1805000" />
+      <workItem from="1734449756475" duration="24328000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

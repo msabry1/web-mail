@@ -14,7 +14,7 @@ const MailsListHeader = ({ priorityOptions, activeFilter, onFilterChange }) => {
           onClick={() => onFilterChange(item, index)}
         >
           <img
-            src={item === "drafts" ? "/draft.png" : PRIORITY_ICONS[item]}
+            src={item === "drafts" ? "/draft.png" : PRIORITY_ICONS[item.toUpperCase()]}
             alt={item}
             width={20}
           />
