@@ -1,14 +1,13 @@
 package com.foe.webmail.entity;
 
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
 
-@Getter
 public class UserPrinciple implements UserDetails {
+
     private final User user;
 
     public UserPrinciple(User user) {
@@ -32,21 +31,33 @@ public class UserPrinciple implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // You can add custom logic here
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // You can add custom logic here
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // You can add custom logic here
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return true; // You can add custom logic here
+        return true;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getFirstName() {
+        return user.getFirstName();
+    }
+
+    public String getLastName() {
+        return user.getLastName();
     }
 }
