@@ -1,62 +1,37 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
+import { fetchUserById } from "../services/UserService";
 const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState({
-    name: "Ahmed Mohsen",
-    username: "ahmed-mohsen",
-    image: "https://ui-avatars.com/api/?name=Ahmed+Mohsen",
-  });
+  const [user, setUser] = useState(null);
+  const [userFolders, setUserFolders] = useState([]);
   const [token, setToken] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-  useEffect(() => {
-    /*
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      try {
-        setToken(storedToken);
-        setIsAuthenticated(true);
-        fetchUserDetails(storedToken);
-      } catch (error) {
-        localStorage.removeItem("token");
-        setIsAuthenticated(false);
-      }
-    }
-*/
-  }, []);
-
   const login = async (credentials) => {
     try {
-      const response = /*AuthService.login(credentials)*/ null;
-      const data = response.data;
-      if (!data || !response.ok) {
-        localStorage.setItem("token", data.token);
+      const data = await fetchUserById(1);
 
-        setToken(data.token);
-        setIsAuthenticated(true);
-        setUser(data.user);
-      }
+      // localStorage.setItem("token", data.token);
+      // setToken(data.token);
+      setIsAuthenticated(true);
+      setUser({
+        name: `${data.firstName} ${data.lastName}`,
+        username: data.username,
+        image: `https://ui-avatars.com/api/?name=${data.firstName}+${data.lastName}`,
+      });
+      console.log("user folders", data.foldersNames);
+      setUserFolders(data.foldersNames);
     } catch (error) {
       console.error("Login failed", error);
-      setIsAuthenticated(false);
+      // setIsAuthenticated(false);
     }
   };
 
-  const fetchUserDetails = async (authToken) => {
-    try {
-      const response = await fetch("/api/user/me", {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-      const userData = response.data;
-      setUser(userData);
-    } catch (error) {
-      console.error("Failed to fetch user details", error);
-    }
-  };
+  useEffect(() => {
+    login(null);
+  }, []);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -68,6 +43,7 @@ export const UserProvider = ({ children }) => {
 
   const value = {
     user,
+    userFolders,
     token,
     isAuthenticated,
     login,

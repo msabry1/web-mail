@@ -34,7 +34,7 @@ const MailListItem = ({
               {item.subject || "No subject"}
             </p>
             <p className="text-xs text-gray-500">
-              Saved:{new Date(item.createdAt).toLocaleString()}
+              Saved:{new Date(item.date).toLocaleString()}
             </p>
           </div>
         </div>
@@ -81,7 +81,7 @@ const MailListItem = ({
         </button>
 
         <div className="text-sm text-gray-500 mr-2">
-          {new Date(item.createdAt).toLocaleString()}
+          {new Date(item.date).toLocaleString()}
         </div>
       </div>
     </div>

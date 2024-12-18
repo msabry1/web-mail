@@ -4,6 +4,7 @@ import { FaRegStar } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import { VscSend } from "react-icons/vsc";
 import { useUI } from "../../context/UIContext";
+import { useUser } from "../../context/UserContext";
 import { useEmailsContext } from "../../context/EmailsContext";
 import { useNavigate } from "react-router-dom";
 const Sidebar = () => {
@@ -11,13 +12,11 @@ const Sidebar = () => {
   const { toggleComposing } = useUI();
   const { currentFolder, setCurrentFolder } = useEmailsContext();
   const [showFolders, setShowFolders] = useState(false);
-
+  const { userFolders } = useUser();
   const handleMenuItemClick = async (key) => {
     setCurrentFolder(key);
-    if(key === "contacts")
-        navigate("/contacts");
-    else 
-        navigate("/");
+    if (key === "contacts") navigate("/contacts");
+    else navigate("/");
     //TODO: fetch emails for the selected folder
   };
 
@@ -51,18 +50,6 @@ const Sidebar = () => {
       icon: <GoPersonAdd />, // You'll need to import this icon
       label: "Contacts",
       key: "contacts",
-    },
-  ];
-
-  // Additional menu items that can be toggled
-  const folders = [
-    {
-      label: "Work",
-      key: "Work",
-    },
-    {
-      label: "College",
-      key: "College",
     },
   ];
 
@@ -109,19 +96,16 @@ const Sidebar = () => {
 
         {/* Additional Menu Items */}
         {showFolders &&
-          folders.map((item) => (
+          userFolders.map((item) => (
             <div
-              key={item.key}
-              onClick={() => handleMenuItemClick(item.key)}
+              key={item}
+              onClick={() => handleMenuItemClick(item)}
               className={`flex items-center gap-5 pl-5 pr-2 py-2 cursor-pointer rounded-r-full ${
-                currentFolder === item.key ? "bg-gray-300" : "hover:bg-gray-300"
+                currentFolder === item ? "bg-gray-300" : "hover:bg-gray-300"
               }`}
             >
-              {item.icon}
-              <span
-                className={currentFolder === item.key ? "font-semibold" : ""}
-              >
-                {item.label}
+              <span className={currentFolder === item ? "font-semibold" : ""}>
+                {item}
               </span>
             </div>
           ))}

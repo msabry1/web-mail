@@ -23,7 +23,7 @@ export const EmailsProvider = ({ children }) => {
         subject: "Meeting Reminder",
         message:
           "Don't forget about the meeting at 10am. this is the image in the attachments but viewed in markdown ![image](https://webmail-attachments.s3.il-central-1.amazonaws.com/3eeb7cc8-e2fd-4156-8f12-5a5b69a6524c_image-7.png)",
-        createdAt: new Date(),
+        date: new Date(),
         priority: PRIORITY_LEVELS.HIGH,
         attachments: [
           {
@@ -53,7 +53,7 @@ export const EmailsProvider = ({ children }) => {
         to: "jane.doe@example.com",
         subject: "Promotion Offer",
         message: "Get 50% off on your next purchase.",
-        createdAt: new Date(),
+        date: new Date(),
         priority: PRIORITY_LEVELS.LOW,
         read: false,
         starred: true,
@@ -63,7 +63,7 @@ export const EmailsProvider = ({ children }) => {
         to: "support@company.com",
         subject: "System Update Notification",
         message: "Important system maintenance scheduled.",
-        createdAt: new Date(),
+        date: new Date(),
         priority: PRIORITY_LEVELS.MEDIUM,
         read: false,
         starred: true,
@@ -151,7 +151,7 @@ export const EmailsProvider = ({ children }) => {
         const updatedDrafts = [...prevDrafts];
         updatedDrafts[existingIndex] = {
           ...draftData,
-          createdAt: new Date(),
+          date: new Date(),
           attachments: [],
         };
         return updatedDrafts;
@@ -162,7 +162,7 @@ export const EmailsProvider = ({ children }) => {
         {
           ...draftData,
           id: Date.now(),
-          createdAt: new Date(),
+          date: new Date(),
           attachments: [],
         },
       ];
