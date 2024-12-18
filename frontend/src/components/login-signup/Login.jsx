@@ -1,28 +1,29 @@
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { useLogin } from "../../hooks/useAuth";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useUser } from "../../context/UserContext";
+import { Link, useNavigate } from "react-router-dom";
+import { getAuthData } from "../../services/authAxios";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
 
-  const { login } = useUser();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!username || !password) {
-      alert("Please enter both username and password");
-      return;
-    }
-
-    const userData = {
-      username: username,
-      password: password,
-    };
-
-    login(userData);
+  const { login, isLoading, error } = useLogin();
+  const { setAuth } = useAuthContext();
+    
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      const username = e.target.username.value;
+      const password = e.target.password.value;
+      
+      const success = await login(username, password);
+      if (success) {
+          const { user } = getAuthData();
+          setAuth({ user, isLoading: false });
+          navigate("/");
+      }
   };
 
   return (
