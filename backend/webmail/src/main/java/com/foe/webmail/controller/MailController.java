@@ -5,6 +5,7 @@ import com.foe.webmail.dto.FullMailDTO;
 import com.foe.webmail.dto.MailFilterDTO;
 import com.foe.webmail.dto.MailPreviewDTO;
 import com.foe.webmail.service.mailService.MailServiceFacade;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

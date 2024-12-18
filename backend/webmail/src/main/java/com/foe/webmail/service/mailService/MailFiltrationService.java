@@ -45,6 +45,7 @@ public class MailFiltrationService {
         Specification<Mail> specification = Specification.where(
                      MailSpecifications.hasStatus(mailFilterDTO.getStatus()))
                 .and(MailSpecifications.hasSubjectLike(mailFilterDTO.getSubject()))
+                .and(MailSpecifications.hasDateAfter(LocalDateTime.parse(mailFilterDTO.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
                 .and(MailSpecifications.hasFolder(mailFilterDTO.getFolder()))
                 .and(MailSpecifications.hasSender(mailFilterDTO.getSender()))
                 .and(MailSpecifications.hasReceiver(mailFilterDTO.getReceiver()))

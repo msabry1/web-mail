@@ -2,6 +2,7 @@ package com.foe.webmail.mappers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foe.webmail.dto.UserDTO;
+import com.foe.webmail.entity.Folder;
 import com.foe.webmail.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -22,10 +23,9 @@ public class UserMapper {
 
         UserDTO userDTO = objectMapper.convertValue(user, UserDTO.class);
 
-
         if (user.getFolders() != null) {
             List<String> folderNames = user.getFolders().stream()
-                    .map(folder -> folder.getName())
+                    .map(Folder::getName)
                     .collect(Collectors.toList());
             userDTO.setFoldersNames(folderNames);
         }
@@ -34,7 +34,6 @@ public class UserMapper {
     }
 
     public User userDTOToUser(UserDTO userDTO) {
-
         return objectMapper.convertValue(userDTO, User.class);
     }
 }

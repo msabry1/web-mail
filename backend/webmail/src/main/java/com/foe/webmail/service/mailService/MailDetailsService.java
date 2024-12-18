@@ -20,16 +20,13 @@ public class MailDetailsService  {
     }
 
     public FullMailDTO getFullMailById(Long id) {
-        FullMailDTO fullMailDTO = new FullMailDTO() ;
+        FullMailDTO fullMailDTO = null ;
         Optional<Mail> mail = mailRepository.findById(id);
         if(mail.isPresent()) {
-             fullMailDTO.setAttachments(mail.get().getAttachments());
-             fullMailDTO.setBody(mail.get().getBody());
-             fullMailDTO.setId(mail.get().getId());
-        } else {
-            fullMailDTO.setAttachments(null);
-            fullMailDTO.setBody(null);
-            fullMailDTO.setId(null);
+             fullMailDTO = FullMailDTO.builder().attachments(mail.get().getAttachments())
+             .body(mail.get().getBody())
+             .id(mail.get().getId())
+             .build();
         }
         return fullMailDTO;
     }

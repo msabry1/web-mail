@@ -8,10 +8,9 @@ import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class Mail extends BaseEntity {
+public class Mail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package com.foe.webmail.dto;
 
+import com.foe.webmail.entity.Contact;
 import lombok.Data;
 
 import java.util.List;
@@ -11,4 +12,5 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private List<String> foldersNames;
+    private List<Contact> contacts;
 }
