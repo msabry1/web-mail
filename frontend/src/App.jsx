@@ -25,7 +25,6 @@ ProtectedRoute.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-// Define the router with nested routes
 const router = createBrowserRouter([
   {
     path: "/",
