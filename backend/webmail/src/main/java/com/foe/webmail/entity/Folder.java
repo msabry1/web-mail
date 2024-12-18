@@ -33,5 +33,6 @@ public class Folder extends BaseEntity {
             joinColumns = { @JoinColumn(name = "folder_id", referencedColumnName = "id") },
             inverseJoinColumns = {@JoinColumn(name = "mail_id", referencedColumnName = "id")}
     )
+    @JsonIgnore
     private List<Mail> mails;
 }
