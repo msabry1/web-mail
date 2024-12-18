@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 public class Mail {

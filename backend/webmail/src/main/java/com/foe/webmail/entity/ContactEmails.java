@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name = "Contact_emails")
