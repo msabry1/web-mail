@@ -15,6 +15,7 @@ import MailDetails from "./components/mails/MailDetails";
 import ContactsPage from "./components/ContactsPage";
 import PropTypes from "prop-types";
 import { Toaster } from "sonner";
+import { AuthProvider } from "./hooks/useAuthContext";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useUser();
@@ -86,7 +87,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
       <Toaster position="top-center" richColors className="toaster-container" />
     </>
   );
