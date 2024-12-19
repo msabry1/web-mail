@@ -10,7 +10,7 @@ export const handleRequest = async (request) => {
     } catch (error) {
         return {
             data: null,
-            error: error.response?.data?.message || 'An error occurred',
+            error: error || 'An error occurred',
             status: error.response?.status,
         };
     }

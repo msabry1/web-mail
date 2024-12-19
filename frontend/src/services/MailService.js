@@ -1,32 +1,33 @@
-import axios from "axios";
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-
+import { handleRequest } from "./handleRequest";
+import authAxios from "./authAxios";
 class MailService {
-  static fetchEmails = async (filter) => {
-    try {
-      const response = await axios.post(`${BASE_URL}/mails`, filter);
-      return response.data;
-    } catch (error) {
+  static fetchEmails = (filter) => {
+    console.log("Fetching emails with filter:", filter);
+    const { data, error } = handleRequest(() =>
+      authAxios.post(`/mails`, filter)
+    );
+    if (error) {
       console.error("Error fetching emails:", error);
     }
+    return data;
   };
 
-  static fetchEmail = async (id) => {
-    try {
-      const response = await axios.get(`${BASE_URL}/mails/${id}`);
-      return response.data;
-    } catch (error) {
+  static fetchEmail = (id) => {
+    const { data, error } = handleRequest(() => authAxios.get(`/mails/${id}`));
+    if (error) {
       console.error("Error fetching email:", error);
     }
+    return data;
   };
 
-  static deleteEmail = async (id) => {
-    try {
-      const response = await axios.delete(`${BASE_URL}/mails/${id}`);
-      return response.data;
-    } catch (error) {
+  static deleteEmail = (id) => {
+    const { data, error } = handleRequest(() =>
+      authAxios.delete(`/mails/${id}`)
+    );
+    if (error) {
       console.error("Error deleting email:", error);
     }
+    return data;
   };
 }
 

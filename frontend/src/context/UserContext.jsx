@@ -31,9 +31,9 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    login(null);
-  }, []);
+  // useEffect(() => {
+    // login(null);
+  // }, []);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -48,6 +48,7 @@ export const UserProvider = ({ children }) => {
     userFolders,
     token,
     isAuthenticated,
+    setIsAuthenticated,
     login,
     logout,
   };

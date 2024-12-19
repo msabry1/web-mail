@@ -1,15 +1,16 @@
 import { useState, useCallback } from 'react';
 import authAxios, { setAuthData, clearAuthData } from '../services/authAxios';
 import { handleRequest } from '../services/handleRequest';
-
+import { useUser } from '../context/UserContext';
 export const useLogin = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-
+    const {setIsAuthenticated} = useUser();
     const login = useCallback(async (username, password) => {
         setIsLoading(true);
         setError(null);
-
+        console.log("Username:", username);
+        console.log("password:", password);
         const { data, error: requestError } = await handleRequest(() =>
             authAxios.post('/auth/login', { username, password })
         );
@@ -23,6 +24,7 @@ export const useLogin = () => {
         const { token, ...userData } = data;
         setAuthData(token, userData);
         setIsLoading(false);
+        setIsAuthenticated(true);
         return true;
     }, []);
 
