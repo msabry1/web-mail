@@ -145,21 +145,6 @@ const sendMail = (e) => {
   }
 };
 
-    setShowSuccessAnimation(true);
-    resetForm();
-    setAttachments([]);
-    setSelectedContacts([]);
-    setComposing(false);
-  } catch (err) {
-    console.error("Error sending email:", err);
-  } finally {
-    setLoading(false);
-    setTimeout(() => {
-      onCancel();
-    }, 1000);
-  }
-};
-
 
   const handleContactSelect = (contact) => {
     // Toggle contact selection
