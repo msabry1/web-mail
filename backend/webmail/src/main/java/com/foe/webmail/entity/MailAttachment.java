@@ -2,13 +2,15 @@ package com.foe.webmail.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 
 @Data
 @Entity
-public class MailAttachment {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class MailAttachment{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

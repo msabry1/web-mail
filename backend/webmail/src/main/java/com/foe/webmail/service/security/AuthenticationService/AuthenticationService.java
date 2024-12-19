@@ -23,6 +23,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+
     @Transactional
     public AuthenticationDto.AuthenticationResponse register(AuthenticationDto.RegisterRequest request) {
         // Check if username already exists

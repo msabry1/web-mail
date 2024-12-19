@@ -18,6 +18,7 @@ public class MailPreviewMapper {
 
         mailPreviewDTO.setId(mail.getId());
         mailPreviewDTO.setSender(mail.getSender().getUsername());
+
         mailPreviewDTO.setSubject(mail.getSubject());
         mailPreviewDTO.setDate(mail.getDate());
         mailPreviewDTO.setImportance(mail.getImportance());
