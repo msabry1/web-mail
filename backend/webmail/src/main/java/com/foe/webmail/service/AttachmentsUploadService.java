@@ -1,6 +1,6 @@
 package com.foe.webmail.service;
 
-import com.foe.webmail.dto.MultipartFileDto;
+import com.foe.webmail.dto.PermanentFileDto;
 import com.foe.webmail.repository.AttachmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,18 +10,18 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class MultipartUploadService {
+public class AttachmentsUploadService {
     private final AttachmentRepository attachmentRepository;
 
     @Autowired
-    public MultipartUploadService(AttachmentRepository attachmentRepository){
+    public AttachmentsUploadService(AttachmentRepository attachmentRepository){
         this.attachmentRepository = attachmentRepository;
     }
 
-    public List<CompletableFuture<Void>> uploadFilesAsync(
-            List<MultipartFileDto> filesDto
+    public CompletableFuture<Void> uploadFilesAsync(
+            List<PermanentFileDto> filesDto
     ) {
-        return filesDto.parallelStream()
+        List<CompletableFuture<Void>> filesUploadingPromises =  filesDto.parallelStream()
                 .map(fileDto -> {
                     try {
                         return attachmentRepository.upload(fileDto.getKey(), fileDto.getFile());
@@ -30,6 +30,7 @@ public class MultipartUploadService {
                     }
                 })
                 .toList();
+        return CompletableFuture.allOf(filesUploadingPromises.toArray(new CompletableFuture[0]));
     }
 
 }

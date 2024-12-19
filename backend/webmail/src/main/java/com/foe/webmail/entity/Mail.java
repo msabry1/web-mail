@@ -2,16 +2,17 @@ package com.foe.webmail.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class Mail extends BaseEntity {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Mail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,6 +11,7 @@ import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
@@ -28,14 +29,14 @@ public class AWSAttachmentRepository implements AttachmentRepository {
         this.s3AsyncClient = s3AsyncClient;
     }
     @Override
-    public CompletableFuture<Void> upload(String key, MultipartFile file) throws IOException, InterruptedException {
+    public CompletableFuture<Void> upload(String key, File file) throws IOException, InterruptedException {
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .build();
         return s3AsyncClient.putObject(
                 putObjectRequest,
-                AsyncRequestBody.fromBytes(file.getBytes())
+                AsyncRequestBody.fromFile(file)
         ).thenApply(response -> null);
     }
 
