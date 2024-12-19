@@ -3,6 +3,7 @@ import { useLogin } from "../../hooks/useAuth";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuthData } from "../../services/authAxios";
+import { toast } from "sonner";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -10,7 +11,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
-  const { login, isLoading, error } = useLogin();
+  const { login } = useLogin();
   const { setAuth } = useAuthContext();
     
   const handleSubmit = async (e) => {
@@ -23,6 +24,9 @@ const Login = () => {
           const { user } = getAuthData();
           setAuth({ user, isLoading: false });
           navigate("/");
+      }
+      else {
+          toast.error("Login failed");
       }
   };
 

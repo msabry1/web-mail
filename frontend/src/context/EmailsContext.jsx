@@ -27,14 +27,14 @@ export const EmailsProvider = ({ children }) => {
     const fetchFilteredEmails = async () => {
       try {
         let filterDTO = filter;
-        // if (currentFolder === "sent")
-        //   (filterDTO.sender = `${user?.username}`),
-        //     (filterDTO.receiver =
-        //       filterDTO.receiver == user?.username ? "" : filterDTO.receiver);
-        // else
-        //   (filterDTO.receiver = `${user?.username}`),
-        //     (filterDTO.sender =
-        //       filterDTO.sender == user?.username ? "" : filterDTO.sender);
+        if (currentFolder === "sent")
+          (filterDTO.sender = `${user?.username}`),
+            (filterDTO.receiver =
+              filterDTO.receiver == user?.username ? "" : filterDTO.receiver);
+        else
+          (filterDTO.receiver = `${user?.username}`),
+            (filterDTO.sender =
+              filterDTO.sender == user?.username ? "" : filterDTO.sender);
 
         console.log("Filter DTO:", filterDTO, filter);
         let emailsToFilter = await MailService.fetchEmails(filterDTO);

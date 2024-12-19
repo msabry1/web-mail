@@ -1,9 +1,9 @@
 import { handleRequest } from "./handleRequest";
 import authAxios from "./authAxios";
 class MailService {
-  static fetchEmails = (filter) => {
+  static fetchEmails = async (filter) => {
     console.log("Fetching emails with filter:", filter);
-    const { data, error } = handleRequest(() =>
+    const { data, error } = await handleRequest(() =>
       authAxios.post(`/mails`, filter)
     );
     if (error) {
@@ -20,15 +20,15 @@ class MailService {
     return data;
   };
 
-  static deleteEmail = (id) => {
-    const { data, error } = handleRequest(() =>
-      authAxios.delete(`/mails/${id}`)
-    );
-    if (error) {
-      console.error("Error deleting email:", error);
-    }
-    return data;
-  };
+  // static deleteEmail = (id) => {
+  //   const { data, error } = handleRequest(() =>
+  //     authAxios.delete(`/mails/${id}`)
+  //   );
+  //   if (error) {
+  //     console.error("Error deleting email:", error);
+  //   }
+  //   return data;
+  // };
 }
 
 export default MailService;

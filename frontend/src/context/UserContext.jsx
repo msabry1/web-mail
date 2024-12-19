@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import UserService from "../services/UserService";
 const UserContext = createContext(null);
@@ -9,31 +9,10 @@ export const UserProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = async (credentials) => {
-    try {
-      const data = await UserService.fetchUserById(1);
-
-      // localStorage.setItem("token", data.token);
-      // setToken(data.token);
-      setIsAuthenticated(true);
-      setUser({
-        name: `${data?.firstName || ""} ${data?.lastName || ""}`.trim(),
-        username: data?.username,
-        image:
-          data?.firstName || data?.lastName
-            ? `https://ui-avatars.com/api/?name=${data.firstName}+${data.lastName}`
-            : `/default-avatar.jpg`,
-      });
-      setUserFolders(data.foldersNames);
-    } catch (error) {
-      console.error("Login failed", error);
-      // setIsAuthenticated(false);
-    }
+  const login = async () => {
+    const data = await UserService.fetchUserById(0);
+    setUserFolders(data.foldersNames);
   };
-
-  // useEffect(() => {
-    // login(null);
-  // }, []);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -45,6 +24,7 @@ export const UserProvider = ({ children }) => {
 
   const value = {
     user,
+    setUser,
     userFolders,
     token,
     isAuthenticated,

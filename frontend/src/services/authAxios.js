@@ -15,7 +15,6 @@ const authAxios = axios.create({
 // Request interceptor
 authAxios.interceptors.request.use(
     (config) => {
-        console.log
         const token = Cookies.get(TOKEN_KEY);
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -31,7 +30,6 @@ authAxios.interceptors.request.use(
 authAxios.interceptors.response.use(
     (response) => response,
     async (error) => {
-        console.log("Error:", error);
         if (error.response?.status === 401) {
             // Clear auth data on unauthorized
             Cookies.remove(TOKEN_KEY);
