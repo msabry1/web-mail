@@ -21,21 +21,20 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-
+import MailService from "../../services/MailService";
 const Navbar = () => {
   const { profile, setProfile } = useUI();
   const [searchbarInput, setSearchbarInput] = useState("");
-  const { user } = useUser();
-  const { setSearchQuery } = useEmailsContext();
+  const { user, setUserFolders, userFolders } = useUser();
+  const { setSearchQuery, setFilter } = useEmailsContext();
 
   // Filter state
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filterOptions, setFilterOptions] = useState({
-    subjects: "",
+    subject: "",
     body: "",
     date: null,
-    attachments: false,
-    senders: "",
+    attachmentName: "",
   });
 
   // Track if any filters are applied
@@ -44,7 +43,7 @@ const Navbar = () => {
 
   useEffect(() => {
     setSearchQuery(searchbarInput);
-  }, [searchbarInput]);
+  }, [searchbarInput, setSearchQuery]);
 
   const handleFilterChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -61,29 +60,33 @@ const Navbar = () => {
     );
 
     setIsFiltered(hasActiveFilter);
-
-    // TODO: Implement actual filter logic in EmailsContext
-    console.log("Applying filters:", filterOptions);
+    setFilter(filterOptions);
     setIsFilterOpen(false);
   };
 
   const clearFilters = () => {
     // Reset all filter options
     setFilterOptions({
-      subjects: "",
+      subject: "",
       body: "",
       date: null,
-      attachments: false,
-      senders: "",
+      attachmentName: "",
+    });
+    setFilter({
+      subject: "",
+      body: "",
+      date: null,
+      attachmentName: "",
     });
     setIsFiltered(false);
     setIsFilterOpen(false);
   };
 
-  const createNewFolder = () => {
-    // TODO: Implement create folder logic
+  const createNewFolder = async () => {
     console.log("Creating new folder:", newFolderName);
-    // Reset folder name after creation
+    const folderId = await MailService.createFolderFilter(filterOptions, newFolderName);
+    setUserFolders((prev) => [...prev, { id: folderId, name: newFolderName }]);
+    console.log("Updated user folders:", folderId);
     setNewFolderName("");
   };
 
@@ -126,15 +129,15 @@ const Navbar = () => {
 
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="subjects" className="text-right">
-                  Subjects
+                <Label htmlFor="subject" className="text-right">
+                  Subject
                 </Label>
                 <Input
-                  id="subjects"
-                  name="subjects"
+                  id="subject"
+                  name="subject"
                   placeholder="Filter by subject"
                   className="col-span-3"
-                  value={filterOptions.subjects}
+                  value={filterOptions.subject}
                   onChange={handleFilterChange}
                 />
               </div>
@@ -190,26 +193,26 @@ const Navbar = () => {
                 <Label htmlFor="attachments" className="text-right">
                   Attachments
                 </Label>
-                <input
-                  type="checkbox"
+                <Input
                   id="attachments"
-                  name="attachments"
-                  checked={filterOptions.attachments}
-                  onChange={handleFilterChange}
+                  name="attachmentName"
+                  placeholder="Filter by attachment name"
                   className="col-span-3"
+                  value={filterOptions.attachmentName}
+                  onChange={handleFilterChange}
                 />
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="senders" className="text-right">
-                  Senders
+                <Label htmlFor="sender" className="text-right">
+                  Sender
                 </Label>
                 <Input
-                  id="senders"
-                  name="senders"
+                  id="sender"
+                  name="sender"
                   placeholder="Filter by sender username"
                   className="col-span-3"
-                  value={filterOptions.senders}
+                  value={filterOptions.sender}
                   onChange={handleFilterChange}
                 />
               </div>
@@ -253,7 +256,7 @@ const Navbar = () => {
 
       <div onClick={() => setProfile(!profile)} className="cursor-pointer">
         <img
-          src={user?.image}
+          src={user?.image || "/default-avatar.jpg"}
           alt="profile_pic"
           className="rounded-full w-10 h-10 object-cover object-center"
         />

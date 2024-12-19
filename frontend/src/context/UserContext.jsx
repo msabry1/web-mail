@@ -1,64 +1,22 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext } from "react";
 import PropTypes from "prop-types";
+import UserService from "../services/UserService";
 const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userFolders, setUserFolders] = useState([]);
   const [token, setToken] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  
-  useEffect(() => {
-    setUser(
-      {
-        name: "Ahmed Mohsen",
-        username: "ahmed-mohsen",
-        image: "https://ui-avatars.com/api/?name=Ahmed+Mohsen",
-      }
-    )
-    /*
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      try {
-        setToken(storedToken);
-        setIsAuthenticated(true);
-        fetchUserDetails(storedToken);
-      } catch (error) {
-        localStorage.removeItem("token");
-        setIsAuthenticated(false);
-      }
-    }
-*/
-  }, []);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = async (credentials) => {
-    try {
-      const response = /*AuthService.login(credentials)*/ null;
-      const data = response.data;
-      if (!data || !response.ok) {
-        localStorage.setItem("token", data.token);
-
-        setToken(data.token);
-        setIsAuthenticated(true);
-        setUser(data.user);
-      }
-    } catch (error) {
-      console.error("Login failed", error);
-      setIsAuthenticated(false);
-    }
-  };
-
-  const fetchUserDetails = async (authToken) => {
-    try {
-      const response = await fetch("/api/user/me", {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-      const userData = response.data;
-      setUser(userData);
-    } catch (error) {
-      console.error("Failed to fetch user details", error);
-    }
+  const login = async () => {
+    const data = await UserService.fetchUserById(0);
+    data.foldersName.map((folderName) => {
+      return {
+        name: folderName,
+      };
+    });
+    setUserFolders(...data.foldersName);
   };
 
   const logout = () => {
@@ -71,8 +29,12 @@ export const UserProvider = ({ children }) => {
 
   const value = {
     user,
+    setUser,
+    userFolders,
+    setUserFolders,
     token,
     isAuthenticated,
+    setIsAuthenticated,
     login,
     logout,
   };

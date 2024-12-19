@@ -1,96 +1,93 @@
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useUser } from "./UserContext";
 import PropTypes from "prop-types";
-
-export const PriorityIcons = {
-  All: "/inbox.png",
-  Major: "/high.png",
-  Medium: "/medium.png",
-  Minor: "/low.png",
-};
-
+import { PRIORITY_LEVELS } from "../constants/priorities";
+import { saveToLocalStorage, getFromLocalStorage } from "../utils/localStorage";
+import MailService from "../services/MailService";
 const EmailsContext = createContext();
 
 export const EmailsProvider = ({ children }) => {
   const [emails, setEmails] = useState([]);
+  const [filteredEmails, setFilteredEmails] = useState([]);
   const [selectedEmails, setSelectedEmails] = useState([]);
-  const [filter, setFilter] = useState("All");
+  const [priority, setPriority] = useState(PRIORITY_LEVELS.ALL);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentFolder, setCurrentFolder] = useState("inbox");
-  const [drafts, setDrafts] = useState(() => {
-    //! Initializing drafts from localStorage on first render
-    try {
-      const savedDrafts = localStorage.getItem("emailDrafts");
-      return savedDrafts ? JSON.parse(savedDrafts) : [];
-    } catch (error) {
-      console.error("Error parsing drafts from localStorage:", error);
-      return [];
-    }
+  const [drafts, setDrafts] = useState();
+  const { user } = useUser();
+  const [filter, setFilter] = useState({
+    subject: "",
+    body: "",
+    date: null,
+    attachmentName: "",
+    folder: "",
   });
 
   useEffect(() => {
-    const fetchedEmails = [
-      {
-        id: 1,
-        to: "john.doe@example.com",
-        subject: "Meeting Reminder",
-        message: "Don't forget about the meeting at 10am.",
-        createdAt: { seconds: 1678955452 },
-        priority: "Major",
-        read: false,
-        starred: false,
-      },
-      {
-        id: 2,
-        to: "jane.doe@example.com",
-        subject: "Promotion Offer",
-        message: "Get 50% off on your next purchase.",
-        createdAt: { seconds: 1678955735 },
-        priority: "Minor",
-        read: false,
-        starred: true,
-      },
-      {
-        id: 3,
-        to: "support@company.com",
-        subject: "System Update Notification",
-        message: "Important system maintenance scheduled.",
-        createdAt: { seconds: 1678956000 },
-        priority: "Medium",
-        read: false,
-        starred: true,
-      },
-    ];
-    setEmails(fetchedEmails);
-  }, []);
+    const fetchFilteredEmails = async () => {
+      try {
+        let filterDTO = filter;
 
+        console.log("Filter DTO:", filterDTO, filter);
+        let emailsToFilter;
+        if (currentFolder === "sent") {
+          emailsToFilter = await MailService.fetchSentEmails(filterDTO);
+        } else {
+          emailsToFilter = await MailService.fetchReceivedEmails(filterDTO);
+        }
+        console.log("Filtered emails:", emailsToFilter);
+
+        if (currentFolder === "starred") {
+          emailsToFilter = emailsToFilter.filter((email) => email.starred);
+        } else if (currentFolder === "drafts") {
+          emailsToFilter = drafts;
+        } else if (currentFolder !== "inbox" && currentFolder !== "sent") {
+          emailsToFilter = emails.filter(
+            (email) => email.folder === currentFolder
+          );
+        }
+
+        const result = emailsToFilter.filter((email) => {
+          const matchesSearch =
+            email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.receiver.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.body.toLowerCase().includes(searchQuery.toLowerCase());
+
+          const matchesPriority =
+            priority === "All" ||
+            PRIORITY_LEVELS[email.priority.toUpperCase()] ===
+              PRIORITY_LEVELS[priority.toUpperCase()];
+
+          return matchesSearch && matchesPriority;
+        });
+
+        setFilteredEmails(result);
+      } catch (error) {
+        console.error("Error fetching filtered emails:", error);
+      }
+    };
+
+    fetchFilteredEmails();
+  }, [emails, searchQuery, priority, currentFolder, drafts, filter, user]);
+
+  //* Load drafts from localStorage when username changes
   useEffect(() => {
-    localStorage.setItem("emailDrafts", JSON.stringify(drafts));
-  }, [drafts]);
+    if (user?.username) {
+      const savedDrafts = getFromLocalStorage(`${user.username}-emailDrafts`);
+      setDrafts(savedDrafts ?? []);
+    }
+  }, [user?.username]);
+
+  //* Save drafts to localStorage when drafts change
+  useEffect(() => {
+    if (user?.username && drafts) {
+      saveToLocalStorage(`${user.username}-emailDrafts`, drafts);
+    }
+  }, [user?.username, drafts]);
 
   useEffect(() => {
     setSelectedEmails([]);
-  }, [filter, searchQuery, currentFolder]);
-
-  const filteredEmails = useMemo(() => {
-    let emailsToFilter = emails;
-
-    if (currentFolder === "starred") {
-      emailsToFilter = emails.filter((email) => email.starred);
-    } else if (currentFolder !== "inbox") {
-      emailsToFilter = emails.filter((email) => email.folder === currentFolder);
-    }
-
-    return emailsToFilter.filter((email) => {
-      const matchesSearch =
-        email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        email.to.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        email.message.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesPriority = filter === "All" || email.priority === filter;
-
-      return matchesSearch && matchesPriority;
-    });
-  }, [emails, searchQuery, filter, currentFolder]);
+  }, [priority, searchQuery, currentFolder]);
 
   const toggleEmailSelection = (emailId) => {
     setSelectedEmails((prev) =>
@@ -111,55 +108,95 @@ export const EmailsProvider = ({ children }) => {
       );
   };
 
+  const isEmptyDraft = (draft) =>
+    draft.id === null &&
+    draft.to === "" &&
+    draft.subject === "" &&
+    draft.message === "";
+
   const saveDraft = (draftData) => {
-    const existingDraftIndex = drafts.findIndex(
-      (draft) => draft.id === draftData.id
+    if (isEmptyDraft(draftData)) return;
+
+    setDrafts((prevDrafts) => {
+      const existingIndex = prevDrafts.findIndex(
+        (draft) => draft.id === draftData.id
+      );
+
+      if (existingIndex !== -1) {
+        const updatedDrafts = [...prevDrafts];
+        updatedDrafts[existingIndex] = {
+          ...draftData,
+          date: new Date(),
+          attachments: [],
+        };
+        return updatedDrafts;
+      }
+
+      return [
+        ...prevDrafts,
+        {
+          ...draftData,
+          id: Date.now(),
+          date: new Date(),
+          attachments: [],
+        },
+      ];
+    });
+  };
+
+  const deleteDrafts = (draftIds) => {
+    setSelectedEmails(selectedEmails.filter((id) => !draftIds.includes(id)));
+    setDrafts(drafts.filter((draft) => !draftIds.includes(draft.id)));
+  };
+  const deleteEmails = async (emailIds) => {
+    // console.log("Deleting emails:", emailIds);
+    // await emailIds.forEach((e) => {
+    //   MailService.deleteEmail(e);
+    // });
+    setSelectedEmails(
+      selectedEmails.filter((email) => !emailIds.includes(email.id))
     );
-
-    if (existingDraftIndex !== -1) {
-      const updatedDrafts = [...drafts];
-      updatedDrafts[existingDraftIndex] = {
-        ...draftData,
-        createdAt: new Date(),
-      };
-      setDrafts(updatedDrafts);
-    } else {
-      const newDraft = {
-        ...draftData,
-        id: Date.now(), //! Use timestamp as unique ID
-        createdAt: new Date(),
-      };
-      setDrafts([...drafts, newDraft]);
-    }
-    localStorage.setItem("emailDrafts", JSON.stringify(drafts));
+    setEmails((prev) => prev.filter((email) => !emailIds.includes(email.id)));
   };
 
-  const deleteDraft = (draftId) => {
-    setDrafts(drafts.filter((draft) => draft.id !== draftId));
+  const toggleStarEmail = (email) => {
+    //TODO: update to backend
+    setEmails((prevEmails) =>
+      prevEmails.map((e) =>
+        e.id === email.id ? { ...e, starred: !e.starred } : e
+      )
+    );
   };
+
   return (
     <EmailsContext.Provider
       value={{
         emails: filteredEmails,
         setEmails,
-        drafts,
         saveDraft,
-        deleteDraft,
+        deleteDrafts,
         selectedEmails,
         setSelectedEmails,
         toggleEmailSelection,
         toggleSelectAll,
         setSearchQuery,
         searchQuery,
-        setFilter,
-        filter,
+        setPriority,
+        priority,
         currentFolder,
         setCurrentFolder,
+        toggleStarEmail,
+        deleteEmails,
+        setFilter,
       }}
     >
       {children}
     </EmailsContext.Provider>
   );
+};
+
+EmailsProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 // Hook to use the EmailsContext
@@ -169,8 +206,4 @@ export const useEmailsContext = () => {
     throw new Error("useEmailsContext must be used within an EmailsProvider");
   }
   return context;
-};
-
-EmailsProvider.propTypes = {
-  children: PropTypes.node.isRequired,
 };

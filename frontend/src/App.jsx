@@ -4,14 +4,18 @@ import {
   Navigate,
 } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
+import { ContactsProvider } from "./context/ContactsContext";
 import { useUser } from "./context/UserContext";
 import Login from "./components/login-signup/Login";
 import Signup from "./components/login-signup/Signup";
 import Home from "./components/my-ui/Home";
 import Body from "./components/my-ui/Body";
-import MailsList from "./components/mails/MailsList";
+import MailsList from "./components/mails/mails-list/MailsList";
 import MailDetails from "./components/mails/MailDetails";
+import ContactsPage from "./components/ContactsPage";
 import PropTypes from "prop-types";
+import { Toaster } from "sonner";
+import { AuthProvider } from "./hooks/useAuthContext";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useUser();
@@ -22,7 +26,6 @@ ProtectedRoute.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-// Define the router with nested routes
 const router = createBrowserRouter([
   {
     path: "/",
@@ -36,7 +39,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Body />,
+        element: (
+          <ContactsProvider>
+            <Body />
+          </ContactsProvider>
+        ),
         children: [
           {
             path: "/",
@@ -45,6 +52,10 @@ const router = createBrowserRouter([
           {
             path: "/email/:id",
             element: <MailDetails />,
+          },
+          {
+            path: "/contacts",
+            element: <ContactsPage />,
           },
         ],
       },
@@ -73,7 +84,14 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+      <Toaster position="top-center" richColors className="toaster-container" />
+    </>
+  );
 }
 
 export default App;
