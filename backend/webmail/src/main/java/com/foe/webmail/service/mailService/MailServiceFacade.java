@@ -4,6 +4,7 @@ package com.foe.webmail.service.mailService;
 import com.foe.webmail.dto.FullMailDTO;
 import com.foe.webmail.dto.MailFilterDTO;
 import com.foe.webmail.dto.MailPreviewDTO;
+import com.foe.webmail.entity.UserPrinciple;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,19 +14,23 @@ import java.util.List;
 public class MailServiceFacade {
 
     MailDetailsService mailDetailsService;
-    MailFiltrationService mailFiltrationService;
+    MailServiceHandler mailServiceHandler;
     MailDeleteService mailDeleteService;
 
     public MailServiceFacade(MailDetailsService mailDetailsService,
-                             MailFiltrationService mailFiltrationService,
+                             MailServiceHandler mailServiceHandler,
                              MailDeleteService mailDeleteService) {
         this.mailDetailsService = mailDetailsService;
-        this.mailFiltrationService = mailFiltrationService;
+        this.mailServiceHandler = mailServiceHandler;
         this.mailDeleteService = mailDeleteService;
     }
 
-    public List<MailPreviewDTO> getMailsPreviewDtoByFilter(MailFilterDTO mailFilterDTO) {
-        return mailFiltrationService.getMailsPreviewDtoByFilter(mailFilterDTO);
+    public List<MailPreviewDTO> getSentMails(MailFilterDTO mailFilterDTO, UserPrinciple userPrinciple) {
+        return mailServiceHandler.getSentMails(mailFilterDTO, userPrinciple);
+    }
+
+    public List<MailPreviewDTO> getReceivedMails(MailFilterDTO mailFilterDTO, UserPrinciple userPrinciple) {
+        return mailServiceHandler.getReceivedMails(mailFilterDTO, userPrinciple);
     }
 
     public FullMailDTO getFullMailById(Long id) {

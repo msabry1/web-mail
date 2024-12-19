@@ -4,8 +4,9 @@ package com.foe.webmail.controller;
 import com.foe.webmail.dto.FullMailDTO;
 import com.foe.webmail.dto.MailFilterDTO;
 import com.foe.webmail.dto.MailPreviewDTO;
+import com.foe.webmail.entity.UserPrinciple;
 import com.foe.webmail.service.mailService.MailServiceFacade;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,9 +20,16 @@ public class MailController {
         this.mailServiceFacade = mailServiceFacade;
     }
 
-    @GetMapping("mails")
-    public List<MailPreviewDTO> mails(@RequestBody MailFilterDTO mailFilterDTO) {
-        return mailServiceFacade.getMailsPreviewDtoByFilter(mailFilterDTO);
+    @GetMapping("mails/sent")
+    public List<MailPreviewDTO> sentMails(@RequestBody MailFilterDTO mailFilterDTO,
+                                      @AuthenticationPrincipal UserPrinciple user) {
+        return mailServiceFacade.getSentMails(mailFilterDTO, user);
+    }
+
+    @GetMapping("mails/received")
+    public List<MailPreviewDTO> receivedMails(@RequestBody MailFilterDTO mailFilterDTO,
+                                      @AuthenticationPrincipal UserPrinciple user) {
+        return mailServiceFacade.getReceivedMails(mailFilterDTO, user);
     }
 
     @GetMapping("mails/{id}")
