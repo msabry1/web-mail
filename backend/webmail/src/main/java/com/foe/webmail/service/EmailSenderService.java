@@ -34,25 +34,27 @@ public class EmailSenderService {
         this.permenantFileDtoToMailAttachements = permenantFileDtoToMailAttachements;
         this.attachmentsUploadService = attachmentsUploadService;
     }
-    public void sendEmail(EmailComposeDto emailComposeDto, String user){
+    public void sendEmail(EmailComposeDto emailComposeDto, String sender){
+
+        List<User> receivers = userRepository.findByUsernameIn(emailComposeDto.getReceivers());
+        if (receivers.isEmpty()) {
+            throw new RuntimeException("no receivers found");
+        } //check if no receivers don't involve in async process
+
         List<PermanentFileDto> permanentFileDtos =
                 permanentFileService.mapMultiPartToPermanentFileDto(emailComposeDto.getFiles());
 
         CompletableFuture.runAsync(() ->
-                UploadFilesThenSave(emailComposeDto,permanentFileDtos,user)
+                UploadFilesThenSave(emailComposeDto,permanentFileDtos,sender,receivers)
         )
                 .thenRun(() ->
                 permanentFileService.deletePermanentFiles(permanentFileDtos)
         );
     }
-    private void UploadFilesThenSave(EmailComposeDto emailComposeDto,List<PermanentFileDto> permanentFileDtos, String user) {
+    private void UploadFilesThenSave(EmailComposeDto emailComposeDto,List<PermanentFileDto> permanentFileDtos, String user,List<User> receivers) {
 
-        User sender = userRepository.findByUsername(user);
-        List<User> receivers = userRepository.findByUsernameIn(emailComposeDto.getReceivers());
+        User sender = userRepository.findByUsername(user).get();
 
-        if (receivers.isEmpty()) {
-            throw new RuntimeException("no receivers found");
-        }
         CompletableFuture<Void> allFutures = attachmentsUploadService.uploadFilesAsync(permanentFileDtos) ;
 
         Mail email = Mail.builder()

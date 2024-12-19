@@ -1,17 +1,18 @@
 package com.foe.webmail.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
 
 import java.util.List;
 
+
+
 @Entity
 @Data
-public class User{
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,5 +25,6 @@ public class User{
     private List<Folder> folders;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "sender")
+    @JsonIgnore
     private List<Mail> sentMails;
 }
