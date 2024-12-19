@@ -1,7 +1,7 @@
 package com.foe.webmail.controller;
 
 import com.foe.webmail.dto.AuthenticationDto;
-import com.foe.webmail.service.AuthenticationService.AuthenticationService;
+import com.foe.webmail.service.security.AuthenticationService.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

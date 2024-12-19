@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     private final ObjectMapper objectMapper;
+    private final ContactMapper contactMapper;
 
-    public UserMapper(ObjectMapper objectMapper) {
+    public UserMapper(ObjectMapper objectMapper, ContactMapper contactMapper) {
         this.objectMapper = objectMapper;
+        this.contactMapper = contactMapper;
     }
 
 
@@ -29,6 +31,7 @@ public class UserMapper {
                     .collect(Collectors.toList());
             userDTO.setFoldersNames(folderNames);
         }
+        userDTO.setContactsDto(contactMapper.toContactDtoList(user.getContacts()));
 
         return userDTO;
     }

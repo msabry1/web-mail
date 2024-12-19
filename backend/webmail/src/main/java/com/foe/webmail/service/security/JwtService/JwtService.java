@@ -1,4 +1,4 @@
-package com.foe.webmail.service.JwtService;
+package com.foe.webmail.service.security.JwtService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -42,6 +42,9 @@ public class MailFiltrationService {
 
     public List<Mail> getMailByFilters(MailFilterDTO mailFilterDTO) {
 
+        if(mailFilterDTO.getDate() == null || mailFilterDTO.getDate().isEmpty()){
+            mailFilterDTO.setDate("1000-01-01 00:00:00");
+        }
         Specification<Mail> specification = Specification.where(
                      MailSpecifications.hasStatus(mailFilterDTO.getStatus()))
                 .and(MailSpecifications.hasSubjectLike(mailFilterDTO.getSubject()))

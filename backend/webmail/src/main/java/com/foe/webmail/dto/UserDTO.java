@@ -12,5 +12,5 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private List<String> foldersNames;
-    private List<Contact> contacts;
+    private List<ContactDTO> contactsDto;
 }

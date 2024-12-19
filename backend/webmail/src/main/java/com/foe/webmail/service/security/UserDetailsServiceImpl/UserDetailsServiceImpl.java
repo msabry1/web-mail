@@ -1,4 +1,4 @@
-package com.foe.webmail.service.UserDetailsServiceImpl;
+package com.foe.webmail.service.security.UserDetailsServiceImpl;
 
 import com.foe.webmail.entity.UserPrinciple;
 import com.foe.webmail.repository.UserRepository;

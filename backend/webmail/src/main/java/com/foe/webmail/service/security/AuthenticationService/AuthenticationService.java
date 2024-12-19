@@ -1,10 +1,10 @@
-package com.foe.webmail.service.AuthenticationService;
+package com.foe.webmail.service.security.AuthenticationService;
 
 import com.foe.webmail.dto.AuthenticationDto;
 import com.foe.webmail.entity.User;
 import com.foe.webmail.repository.UserRepository;
 import com.foe.webmail.entity.UserPrinciple;
-import com.foe.webmail.service.JwtService.JwtService;
+import com.foe.webmail.service.security.JwtService.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

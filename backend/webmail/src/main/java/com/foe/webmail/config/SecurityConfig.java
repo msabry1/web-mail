@@ -1,7 +1,7 @@
 package com.foe.webmail.config;
 
-import com.foe.webmail.service.JwtService.JwtService;
-import com.foe.webmail.service.UserDetailsServiceImpl.UserDetailsServiceImpl;
+import com.foe.webmail.service.security.JwtService.JwtService;
+import com.foe.webmail.service.security.UserDetailsServiceImpl.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;

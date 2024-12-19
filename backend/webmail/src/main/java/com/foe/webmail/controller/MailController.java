@@ -15,7 +15,7 @@ public class MailController {
 
     MailServiceFacade mailServiceFacade;
 
-    MailController(MailServiceFacade mailServiceFacade) {
+    public MailController(MailServiceFacade mailServiceFacade) {
         this.mailServiceFacade = mailServiceFacade;
     }
 

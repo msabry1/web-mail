@@ -27,4 +27,7 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "sender")
     @JsonIgnore
     private List<Mail> sentMails;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
+    List<Contact> contacts;
 }

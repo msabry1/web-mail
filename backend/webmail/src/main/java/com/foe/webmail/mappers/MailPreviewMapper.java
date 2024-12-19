@@ -6,6 +6,7 @@ import com.foe.webmail.entity.Mail;
 import com.foe.webmail.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,5 +30,13 @@ public class MailPreviewMapper {
         mailPreviewDTO.setReceivers(receiverUsernames);
 
         return mailPreviewDTO;
+    }
+
+    public List<MailPreviewDTO> toMailPreviewDTOs(List<Mail> mails) {
+        List<MailPreviewDTO> mailPreviewDTOS = new ArrayList<>();
+        for (Mail mail : mails) {
+            mailPreviewDTOS.add(toMailPreviewDTO(mail));
+        }
+        return mailPreviewDTOS;
     }
 }
