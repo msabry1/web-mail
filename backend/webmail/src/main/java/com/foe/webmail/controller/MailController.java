@@ -18,7 +18,7 @@ public class MailController {
         this.mailServiceFacade = mailServiceFacade;
     }
 
-    @GetMapping("mails")
+    @PostMapping("mails")
     public List<MailPreviewDTO> mails(@RequestBody MailFilterDTO mailFilterDTO) {
         return mailServiceFacade.getMailsPreviewDtoByFilter(mailFilterDTO);
     }
