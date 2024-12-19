@@ -11,7 +11,7 @@ export const useEmail = (draftToEdit = null) => {
   const initialData = useMemo(
     () => ({
       id: null,
-      to: "",
+      to: [],
       subject: "",
       message: "",
       priority: PRIORITY_LEVELS.MEDIUM,
