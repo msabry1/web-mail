@@ -98,8 +98,8 @@ const Sidebar = () => {
         {showFolders &&
           userFolders.map((item) => (
             <div
-              key={item}
-              onClick={() => handleMenuItemClick(item)}
+              key={item.name}
+              onClick={() => handleMenuItemClick(item.name)}
               className={`flex items-center gap-5 pl-5 pr-2 py-2 cursor-pointer rounded-r-full ${
                 currentFolder === item ? "bg-gray-300" : "hover:bg-gray-300"
               }`}

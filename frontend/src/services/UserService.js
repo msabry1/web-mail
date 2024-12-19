@@ -2,10 +2,8 @@ import { handleRequest } from "./handleRequest";
 import authAxios from "./authAxios";
 
 class UserService {
-  static fetchUserById = (userId) => {
-    const { data, error } = handleRequest(() =>
-      authAxios.get(`/users/${userId}`)
-    );
+  static fetchUserById = () => {
+    const { data, error } = handleRequest(() => authAxios.get(`/users`));
     if (error) {
       console.error(error);
     }
