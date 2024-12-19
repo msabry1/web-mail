@@ -3,7 +3,7 @@ package com.foe.webmail.dto;
 import lombok.Data;
 
 @Data
-public class AddMailToFolderDto {
+public class AddMailToFolderDTO {
     private Long folderId;
     private Long mailId;
 }

@@ -23,6 +23,8 @@ public class Mail {
     private LocalDateTime date;
     private String importance;
     private String status;
+    private Boolean isSeen;
+    private Boolean isStared;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "mail")
     private List<MailAttachment> attachments;

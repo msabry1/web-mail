@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 
+
 @Entity
 @Data
 public class Folder {
@@ -31,5 +32,6 @@ public class Folder {
             joinColumns = { @JoinColumn(name = "folder_id", referencedColumnName = "id") },
             inverseJoinColumns = {@JoinColumn(name = "mail_id", referencedColumnName = "id")}
     )
+    @JsonIgnore
     private List<Mail> mails;
 }
