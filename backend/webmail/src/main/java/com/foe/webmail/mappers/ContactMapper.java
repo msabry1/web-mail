@@ -23,7 +23,7 @@ public class ContactMapper {
         List<String> emails = contact.getEmails().stream()
                 .map(ContactEmails::getEmail)
                 .collect(Collectors.toList());
-        contactDTO.setEmails(emails);
+        contactDTO.setUsernames(emails);
 
         return contactDTO;
     }
@@ -36,7 +36,7 @@ public class ContactMapper {
         Contact contact = new Contact();
         contact.setId(contactDTO.getId());
         contact.setName(contactDTO.getName());
-        List<ContactEmails> emails = contactDTO.getEmails().stream()
+        List<ContactEmails> emails = contactDTO.getUsernames().stream()
                 .map(email -> {
                     ContactEmails contactEmail = new ContactEmails();
                     contactEmail.setEmail(email);

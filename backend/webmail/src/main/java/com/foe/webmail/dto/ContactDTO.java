@@ -9,5 +9,5 @@ import java.util.List;
 public class ContactDTO {
     private Long id;
     private String name;
-    private List<String> emails;
+    private List<String> usernames;
 }

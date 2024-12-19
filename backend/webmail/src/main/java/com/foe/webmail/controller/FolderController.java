@@ -36,10 +36,12 @@ public class FolderController {
     }
 
 
-//    @PostMapping("folder/filter")
-//    public ResponseEntity<List<MailPreviewDTO>> getFolderFiltered(@RequestBody MailFilterDTO mailFilterDTO) {
-//
-//    }
+    @PostMapping("folder/filter/{folderName}")
+    public ResponseEntity<Long> getFolderFiltered(@RequestBody MailFilterDTO mailFilterDTO,
+                                                                  @PathVariable String folderName,
+                                                                  @AuthenticationPrincipal UserPrinciple user) {
+        return ResponseEntity.status(HttpStatus.OK).body(folderService.filterAndAdd(folderName, mailFilterDTO, user));
+    }
 
     @DeleteMapping("folder/{id}")
     public ResponseEntity<Folder> deleteFolder(@PathVariable Long id) {
