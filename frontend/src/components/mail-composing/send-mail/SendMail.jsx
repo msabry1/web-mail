@@ -6,6 +6,7 @@ import { useUI } from "../../../context/UIContext";
 import { useEmailsContext } from "../../../context/EmailsContext";
 import { useContacts } from "../../../context/ContactsContext"; // Assuming you have a contacts context
 import { useEmail } from "../../../hooks/useEmail";
+import MailService from "../../../services/MailService";
 import EmailEditor from "./EmailEditor";
 import PropTypes from "prop-types";
 
@@ -93,25 +94,35 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
   const sendMail = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const formDataRequest = new FormData();
+
     try {
-      // Combine manually entered 'to' emails with selected contacts' emails
       const recipientEmails = [
         ...(formData.to ? [formData.to] : []),
-        ...selectedContacts.map((contact) => contact.email),
-      ].join(", ");
+        ...selectedContacts.map((contact) => contact.username),
+      ];
 
-      const updatedFormData = {
-        ...formData,
-        to: recipientEmails,
-      };
+      console.log("Selected contacts:", recipientEmails);
+      formDataRequest.append("subject", formData.subject);
+      formDataRequest.append("body", formData.message);
+      formDataRequest.append("importance", formData.priority);
+      recipientEmails.forEach((receiver, index) => {
+        formDataRequest.append(`receivers[${index}]`, receiver);
+      });
+      formData.attachments.forEach((file, index) => {
+        formDataRequest.append(`files[${index}]`, file);
+      });
 
-      console.log("Sending mail to:", recipientEmails);
-      console.log("Attachments to send:", attachments);
+      formDataRequest.forEach((value, key) => {
+        console.log(`${key}: ${value}`, value);
+      });
 
       if (formData.id) {
         deleteDrafts([formData.id]);
       }
+      const response = await MailService.sendEmail(formDataRequest);
 
+      console.log("Email sent successfully:", response);
       setShowSuccessAnimation(true);
       resetForm();
       setAttachments([]); // Clear attachments
@@ -157,12 +168,12 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
             <span>To</span>
             <div className="flex items-center w-full gap-2">
               <input
-                type="email"
+                type="text"
                 name="to"
                 value={formData.to}
                 onChange={handleInputChange}
                 className="outline-none flex-grow"
-                placeholder="Enter email or select from contacts"
+                placeholder="Enter username or select from contacts"
               />
               <button
                 type="button"
@@ -312,7 +323,7 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
                     <div>
                       <div className="font-medium">{contact.name}</div>
                       <div className="text-sm text-gray-600">
-                        {contact.email}
+                        {contact.username}
                       </div>
                     </div>
                     <input

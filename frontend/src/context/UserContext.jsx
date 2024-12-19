@@ -11,7 +11,12 @@ export const UserProvider = ({ children }) => {
 
   const login = async () => {
     const data = await UserService.fetchUserById(0);
-    setUserFolders(data.foldersNames);
+    data.foldersName.map((folderName) => {
+      return {
+        name: folderName,
+      };
+    });
+    setUserFolders(...data.foldersName);
   };
 
   const logout = () => {
@@ -26,6 +31,7 @@ export const UserProvider = ({ children }) => {
     user,
     setUser,
     userFolders,
+    setUserFolders,
     token,
     isAuthenticated,
     setIsAuthenticated,

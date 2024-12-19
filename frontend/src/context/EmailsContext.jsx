@@ -27,17 +27,14 @@ export const EmailsProvider = ({ children }) => {
     const fetchFilteredEmails = async () => {
       try {
         let filterDTO = filter;
-        if (currentFolder === "sent")
-          (filterDTO.sender = `${user?.username}`),
-            (filterDTO.receiver =
-              filterDTO.receiver == user?.username ? "" : filterDTO.receiver);
-        else
-          (filterDTO.receiver = `${user?.username}`),
-            (filterDTO.sender =
-              filterDTO.sender == user?.username ? "" : filterDTO.sender);
 
         console.log("Filter DTO:", filterDTO, filter);
-        let emailsToFilter = await MailService.fetchEmails(filterDTO);
+        let emailsToFilter;
+        if (currentFolder === "sent") {
+          emailsToFilter = await MailService.fetchSentEmails(filterDTO);
+        } else {
+          emailsToFilter = await MailService.fetchReceivedEmails(filterDTO);
+        }
         console.log("Filtered emails:", emailsToFilter);
 
         if (currentFolder === "starred") {
@@ -53,12 +50,13 @@ export const EmailsProvider = ({ children }) => {
         const result = emailsToFilter.filter((email) => {
           const matchesSearch =
             email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            email.to.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.receiver.toLowerCase().includes(searchQuery.toLowerCase()) ||
             email.body.toLowerCase().includes(searchQuery.toLowerCase());
 
           const matchesPriority =
             priority === "All" ||
-            email.priority.toUpperCase() === priority.toUpperCase();
+            PRIORITY_LEVELS[email.priority.toUpperCase()] ===
+              PRIORITY_LEVELS[priority.toUpperCase()];
 
           return matchesSearch && matchesPriority;
         });
