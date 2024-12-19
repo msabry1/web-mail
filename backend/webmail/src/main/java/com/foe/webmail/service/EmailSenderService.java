@@ -9,11 +9,13 @@ import com.foe.webmail.entity.User;
 import com.foe.webmail.mappers.PermenantFileDtoToMailAttachements;
 import com.foe.webmail.repository.MailRepository;
 import com.foe.webmail.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Service
 public class EmailSenderService {
@@ -22,17 +24,20 @@ public class EmailSenderService {
     private final PermanentFileService permanentFileService;
     private final PermenantFileDtoToMailAttachements permenantFileDtoToMailAttachements;
     private final AttachmentsUploadService attachmentsUploadService;
+    private final Executor executor;
 
     public EmailSenderService(UserRepository userRepository,
                               PermanentFileService permanentFileService,
                               MailRepository mailRepository,
                               PermenantFileDtoToMailAttachements permenantFileDtoToMailAttachements,
-                              AttachmentsUploadService attachmentsUploadService) {
+                              AttachmentsUploadService attachmentsUploadService,
+                              @Qualifier("asyncExecutor") Executor executor) {
         this.userRepository = userRepository;
         this.mailRepository = mailRepository;
         this.permanentFileService = permanentFileService;
         this.permenantFileDtoToMailAttachements = permenantFileDtoToMailAttachements;
         this.attachmentsUploadService = attachmentsUploadService;
+        this.executor = executor;
     }
     public void sendEmail(EmailComposeDto emailComposeDto, String sender){
 
@@ -45,7 +50,8 @@ public class EmailSenderService {
                 permanentFileService.mapMultiPartToPermanentFileDto(emailComposeDto.getFiles());
 
         CompletableFuture.runAsync(() ->
-                UploadFilesThenSave(emailComposeDto,permanentFileDtos,sender,receivers)
+                UploadFilesThenSave(emailComposeDto,permanentFileDtos,sender,receivers),
+                executor
         )
                 .thenRun(() ->
                 permanentFileService.deletePermanentFiles(permanentFileDtos)
