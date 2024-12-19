@@ -8,6 +8,8 @@ import { useContacts } from "../../../context/ContactsContext"; // Assuming you 
 import { useEmail } from "../../../hooks/useEmail";
 import EmailEditor from "./EmailEditor";
 import PropTypes from "prop-types";
+import ComposeService from "@/services/ComposeService";
+import FormDataBuilder from "../FormDataBuilder";
 
 const PRIORITY_OPTIONS = [
   {
@@ -89,43 +91,59 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
       },
     });
   };
+const sendMail = (e) => {
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const recipientEmails = [
+      ...(formData.to ? [formData.to] : []),
+      ...selectedContacts.map((contact) => contact.email),
+    ];
 
-  const sendMail = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      // Combine manually entered 'to' emails with selected contacts' emails
-      const recipientEmails = [
-        ...(formData.to ? [formData.to] : []),
-        ...selectedContacts.map((contact) => contact.email),
-      ].join(", ");
+    console.log("Recipient Emails:", recipientEmails);
 
-      const updatedFormData = {
-        ...formData,
-        to: recipientEmails,
-      };
-
-      console.log("Sending mail to:", recipientEmails);
-      console.log("Attachments to send:", attachments);
-
-      if (formData.id) {
-        deleteDrafts([formData.id]);
-      }
-
-      setShowSuccessAnimation(true);
-      resetForm();
-      setAttachments([]); // Clear attachments
-      setSelectedContacts([]); // Clear selected contacts
-      setComposing(false);
-    } catch (err) {
-      console.error("Error sending email:", err);
-    } finally {
+    if (recipientEmails.length === 0) {
       setLoading(false);
-      setTimeout(() => {
-        onCancel();
-      }, 1000);
+      console.error("No recipients provided.");
+      alert("Please add at least one recipient.");
+      return;
     }
-  };
+
+    const updatedFormData = {
+      ...formData,
+      to: recipientEmails,
+    };
+
+    const mailFormData = new FormDataBuilder()
+      .addField('subject', updatedFormData.subject)
+      .addField('body', updatedFormData.message)
+      .addField('importance', updatedFormData.priority)
+      .addMultipleFields('receivers', updatedFormData.to)
+      .addMultipleFiles('files', updatedFormData.attachments)
+      .build();
+
+    console.log("Mail Form Data:", Array.from(mailFormData.entries()));
+    ComposeService.sendEmail(mailFormData);
+
+    if (formData.id) {
+      deleteDrafts([formData.id]);
+    }
+
+    setShowSuccessAnimation(true);
+    resetForm();
+    setAttachments([]);
+    setSelectedContacts([]);
+    setComposing(false);
+  } catch (err) {
+    console.error("Error sending email:", err);
+  } finally {
+    setLoading(false);
+    setTimeout(() => {
+      onCancel();
+    }, 1000);
+  }
+};
+
 
   const handleContactSelect = (contact) => {
     // Toggle contact selection
@@ -157,7 +175,7 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
             <span>To</span>
             <div className="flex items-center w-full gap-2">
               <input
-                type="email"
+                type="text"
                 name="to"
                 value={formData.to}
                 onChange={handleInputChange}
@@ -364,7 +382,7 @@ export default SendMail;
 SendMail.propTypes = {
   draftToEdit: PropTypes.shape({
     id: PropTypes.number,
-    to: PropTypes.string,
+    to: PropTypes.arrayOf(PropTypes.string),
     subject: PropTypes.string,
     message: PropTypes.string,
     priority: PropTypes.oneOf(["Low", "Medium", "High"]),
