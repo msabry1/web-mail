@@ -8,6 +8,8 @@ import com.foe.webmail.service.userService.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class ContactController {
 
@@ -20,6 +22,11 @@ public class ContactController {
     public ContactDTO addContact(@RequestBody ContactDTO contactDTO,
                                  @AuthenticationPrincipal UserPrinciple userPrinciple) {
         return contactService.addContact(contactDTO, userPrinciple);
+    }
+
+    @GetMapping("users/contact")
+    public List<ContactDTO> getContact(@AuthenticationPrincipal UserPrinciple userPrinciple) {
+        return contactService.getContacts(userPrinciple);
     }
 
     @DeleteMapping("users/contact/{id}")

@@ -2,6 +2,7 @@ package com.foe.webmail.controller;
 
 
 import com.foe.webmail.dto.FolderDTO;
+import com.foe.webmail.dto.MailFilterDTO;
 import com.foe.webmail.dto.MailPreviewDTO;
 import com.foe.webmail.entity.Folder;
 import com.foe.webmail.entity.Mail;
@@ -33,6 +34,12 @@ public class FolderController {
     public ResponseEntity<List<MailPreviewDTO>> getFolder(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(folderService.getFolderMails(id));
     }
+
+
+//    @PostMapping("folder/filter")
+//    public ResponseEntity<List<MailPreviewDTO>> getFolderFiltered(@RequestBody MailFilterDTO mailFilterDTO) {
+//
+//    }
 
     @DeleteMapping("folder/{id}")
     public ResponseEntity<Folder> deleteFolder(@PathVariable Long id) {

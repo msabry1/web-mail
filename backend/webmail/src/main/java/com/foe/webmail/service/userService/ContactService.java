@@ -8,8 +8,12 @@ import com.foe.webmail.entity.UserPrinciple;
 import com.foe.webmail.mappers.ContactMapper;
 import com.foe.webmail.repository.ContactRepository;
 import com.foe.webmail.repository.UserRepository;
+import com.foe.webmail.service.userService.filter.ContactSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,6 +39,18 @@ public class ContactService {
             throw new IllegalArgumentException("no such a user");
         }
         return contactMapper.toContactDTO(contactRepository.save(contact));
+    }
+
+    public List<ContactDTO> getContacts(UserPrinciple userPrinciple) {
+        Specification<Contact> spec = Specification.where(
+                ContactSpecification.hasUsername(userPrinciple.getUsername())
+        );
+        List<Contact> contacts = contactRepository.findAll(spec);
+        List<ContactDTO> contactDTOS = new ArrayList<>();
+        for (Contact contact : contacts) {
+            contactDTOS.add(contactMapper.toContactDTO(contact));
+        }
+        return contactDTOS ;
     }
 
     public void deleteContact(Long id) {
