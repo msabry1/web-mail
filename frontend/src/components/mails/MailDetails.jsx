@@ -90,7 +90,7 @@ const MailDetails = () => {
   };
 
   const handleDownload = (attachment) => {
-    window.open(attachment.url, "_blank");
+    window.open(attachment.link, "_blank");
   };
 
   const renderAttachments = () => {

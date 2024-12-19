@@ -4,11 +4,12 @@ class ContactsService {
   static addContact = async (contact) => {
     const contactDTO = {
       name: contact.name,
-      emails: [contact.username],
+      usernames: [contact.username],
     };
     const { data, error } = await handleRequest(() =>
       authAxios.post(`users/contact`, contactDTO)
     );
+    console.log("Contact added:", data);
     if (error) {
       console.error("Error fetching contacts:", error);
     }

@@ -23,26 +23,28 @@ class MailService {
     return data;
   };
 
-  static fetchEmail = (id) => {
-    const { data, error } = handleRequest(() => authAxios.get(`/mails/${id}`));
+  static fetchEmail = async (id) => {
+    const { data, error } = await handleRequest(() => authAxios.get(`/mails/${id}`));
+    console.log("Fetched email:", data);
     if (error) {
       console.error("Error fetching email:", error);
     }
     return data;
   };
 
-  static sendEmail = (email) => {
-    const { data, error } = handleRequest(() =>
+  static sendEmail = async (email) => {
+    const { data, error } = await handleRequest(() =>
       authAxios.post(`/compose`, email)
     );
+    console.log("Sent email:", data);
     if (error) {
       console.error("Error sending email:", error);
     }
     return data;
   };
 
-  static createFolderFilter = (filter, folderName) => {
-    const { data, error } = handleRequest(() =>
+  static createFolderFilter = async (filter, folderName) => {
+    const { data, error } = await handleRequest(() =>
       authAxios.post(`/folder/filter/${folderName}`, filter)
     );
     console.log("Created folder filter:", data);

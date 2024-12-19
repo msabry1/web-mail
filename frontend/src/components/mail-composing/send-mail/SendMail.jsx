@@ -92,74 +92,58 @@ const SendMail = ({ draftToEdit = null, onCancel }) => {
       },
     });
   };
-const sendMail = (e) => {
-  e.preventDefault();
-  setLoading(true);
-  try {
-    const recipientEmails = [
-      ...(formData.to ? [formData.to] : []),
-      ...selectedContacts.map((contact) => contact.email),
-    ];
+  const sendMail = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const recipientEmails = [
+        ...(formData.to ? [formData.to] : []),
+        ...selectedContacts.map((contact) => contact.email),
+      ];
 
-    console.log("Recipient Emails:", recipientEmails);
+      console.log("Recipient Emails:", recipientEmails);
 
-    if (recipientEmails.length === 0) {
+      if (recipientEmails.length === 0) {
+        setLoading(false);
+        console.error("No recipients provided.");
+        alert("Please add at least one recipient.");
+        return;
+      }
+
+      const updatedFormData = {
+        ...formData,
+        to: recipientEmails,
+      };
+
+      const mailFormData = new FormDataBuilder()
+        .addField("subject", updatedFormData.subject)
+        .addField("body", updatedFormData.message)
+        .addField("importance", updatedFormData.priority)
+        .addMultipleFields("receivers", updatedFormData.to)
+        .addMultipleFiles("files", updatedFormData.attachments)
+        .build();
+
+      console.log("Mail Form Data:", Array.from(mailFormData.entries()));
+      ComposeService.sendEmail(mailFormData);
+
+      if (formData.id) {
+        deleteDrafts([formData.id]);
+      }
+
+      setShowSuccessAnimation(true);
+      resetForm();
+      setAttachments([]);
+      setSelectedContacts([]);
+      setComposing(false);
+    } catch (err) {
+      console.error("Error sending email:", err);
+    } finally {
       setLoading(false);
-      console.error("No recipients provided.");
-      alert("Please add at least one recipient.");
-      return;
+      setTimeout(() => {
+        onCancel();
+      }, 1000);
     }
-
-    const updatedFormData = {
-      ...formData,
-      to: recipientEmails,
-    };
-
-    const mailFormData = new FormDataBuilder()
-      .addField('subject', updatedFormData.subject)
-      .addField('body', updatedFormData.message)
-      .addField('importance', updatedFormData.priority)
-      .addMultipleFields('receivers', updatedFormData.to)
-      .addMultipleFiles('files', updatedFormData.attachments)
-      .build();
-
-    console.log("Mail Form Data:", Array.from(mailFormData.entries()));
-    ComposeService.sendEmail(mailFormData);
-
-    if (formData.id) {
-      deleteDrafts([formData.id]);
-    }
-
-    setShowSuccessAnimation(true);
-    resetForm();
-    setAttachments([]);
-    setSelectedContacts([]);
-    setComposing(false);
-  } catch (err) {
-    console.error("Error sending email:", err);
-  } finally {
-    setLoading(false);
-    setTimeout(() => {
-      onCancel();
-    }, 1000);
-  }
-};
-
-    setShowSuccessAnimation(true);
-    resetForm();
-    setAttachments([]);
-    setSelectedContacts([]);
-    setComposing(false);
-  } catch (err) {
-    console.error("Error sending email:", err);
-  } finally {
-    setLoading(false);
-    setTimeout(() => {
-      onCancel();
-    }, 1000);
-  }
-};
-
+  };
 
   const handleContactSelect = (contact) => {
     // Toggle contact selection

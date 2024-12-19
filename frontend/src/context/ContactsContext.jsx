@@ -4,22 +4,7 @@ import ContactsService from "../services/ContactsService";
 const ContactsContext = createContext();
 
 export const ContactsProvider = ({ children }) => {
-  const [contacts, setContacts] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      username: "john.doe@example.com",
-      phone: "+1 (555) 123-4567",
-      label: "Personal",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "jane.smith@work.com",
-      phone: "+1 (555) 987-6543",
-      label: "Work",
-    },
-  ]);
+  const [contacts, setContacts] = useState([]);
 
   const [selectedContact, setSelectedContact] = useState(null);
 
@@ -30,7 +15,7 @@ export const ContactsProvider = ({ children }) => {
       {
         id: contactToAdd.id,
         name: contactToAdd.name,
-        username: contactToAdd.emails[0],
+        username: contactToAdd.usernames[0],
       },
     ]);
   };
@@ -53,7 +38,7 @@ export const ContactsProvider = ({ children }) => {
         const transformedContacts = fetchedContacts.map((contact) => ({
           id: contact.id,
           name: contact.name,
-          username: contact.emails[0],
+          username: contact.usernames[0],
         }));
 
         // Update the state
