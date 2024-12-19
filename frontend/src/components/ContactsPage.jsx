@@ -17,14 +17,14 @@ const ContactsPage = () => {
 
   const [newContact, setNewContact] = useState({
     name: "",
-    email: "",
+    username: "",
     phone: "",
     label: "Personal",
   });
 
   const handleSubmitContact = () => {
-    if (!newContact.name || !newContact.email) {
-      alert("Name and email are required");
+    if (!newContact.name || !newContact.username) {
+      alert("Name and username are required");
       return;
     }
 
@@ -38,7 +38,7 @@ const ContactsPage = () => {
     }
 
     // Reset form
-    setNewContact({ name: "", email: "", phone: "", label: "Personal" });
+    setNewContact({ name: "", username: "", phone: "", label: "Personal" });
     setIsAddingContact(false);
   };
 
@@ -46,7 +46,7 @@ const ContactsPage = () => {
     setEditingContact(contact);
     setNewContact({
       name: contact.name,
-      email: contact.email,
+      username: contact.username,
       phone: contact.phone || "",
       label: contact.label,
     });
@@ -65,7 +65,7 @@ const ContactsPage = () => {
               setEditingContact(null);
               setNewContact({
                 name: "",
-                email: "",
+                username: "",
                 phone: "",
                 label: "Personal",
               });
@@ -89,20 +89,11 @@ const ContactsPage = () => {
               className="w-full p-2 mb-2 border rounded"
             />
             <input
-              type="email"
-              placeholder="Email"
-              value={newContact.email}
+              type="username"
+              placeholder="username"
+              value={newContact.username}
               onChange={(e) =>
-                setNewContact({ ...newContact, email: e.target.value })
-              }
-              className="w-full p-2 mb-2 border rounded"
-            />
-            <input
-              type="tel"
-              placeholder="Phone (optional)"
-              value={newContact.phone}
-              onChange={(e) =>
-                setNewContact({ ...newContact, phone: e.target.value })
+                setNewContact({ ...newContact, username: e.target.value })
               }
               className="w-full p-2 mb-2 border rounded"
             />
@@ -150,7 +141,7 @@ const ContactsPage = () => {
             >
               <div>
                 <div className="font-semibold">{contact.name}</div>
-                <div className="text-sm text-gray-600">{contact.email}</div>
+                <div className="text-sm text-gray-600">{contact.username}</div>
               </div>
               <div className="flex space-x-2">
                 <button
@@ -184,7 +175,7 @@ const ContactsPage = () => {
             <h2 className="text-2xl font-bold mb-4">{selectedContact.name}</h2>
             <div className="space-y-2">
               <div>
-                <strong>Email:</strong> {selectedContact.email}
+                <strong>username:</strong> {selectedContact.username}
               </div>
               {selectedContact.phone && (
                 <div>

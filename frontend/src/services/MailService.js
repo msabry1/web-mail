@@ -19,7 +19,14 @@ class MailService {
     }
     return data;
   };
-
+  
+  static sendEmail = (email) => {
+    const { data, error } = handleRequest(() => authAxios.post(`/compose`, email));
+    if (error) {
+      console.error("Error sending email:", error);
+    }
+    return data;
+  }
   // static deleteEmail = (id) => {
   //   const { data, error } = handleRequest(() =>
   //     authAxios.delete(`/mails/${id}`)
