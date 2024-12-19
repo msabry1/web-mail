@@ -21,11 +21,11 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-
+import MailService from "../../services/MailService";
 const Navbar = () => {
   const { profile, setProfile } = useUI();
   const [searchbarInput, setSearchbarInput] = useState("");
-  const { user } = useUser();
+  const { user, setUserFolders, userFolders } = useUser();
   const { setSearchQuery, setFilter } = useEmailsContext();
 
   // Filter state
@@ -61,7 +61,6 @@ const Navbar = () => {
 
     setIsFiltered(hasActiveFilter);
     setFilter(filterOptions);
-    console.log("Applying filters:", filterOptions);
     setIsFilterOpen(false);
   };
 
@@ -83,10 +82,11 @@ const Navbar = () => {
     setIsFilterOpen(false);
   };
 
-  const createNewFolder = () => {
-    // TODO: Implement create folder logic
+  const createNewFolder = async () => {
     console.log("Creating new folder:", newFolderName);
-    // Reset folder name after creation
+    const folderId = await MailService.createFolderFilter(filterOptions, newFolderName);
+    setUserFolders((prev) => [...prev, { id: folderId, name: newFolderName }]);
+    console.log("Updated user folders:", folderId);
     setNewFolderName("");
   };
 

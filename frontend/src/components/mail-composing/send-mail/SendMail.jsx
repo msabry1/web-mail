@@ -6,6 +6,7 @@ import { useUI } from "../../../context/UIContext";
 import { useEmailsContext } from "../../../context/EmailsContext";
 import { useContacts } from "../../../context/ContactsContext"; // Assuming you have a contacts context
 import { useEmail } from "../../../hooks/useEmail";
+import MailService from "../../../services/MailService";
 import EmailEditor from "./EmailEditor";
 import PropTypes from "prop-types";
 import ComposeService from "@/services/ComposeService";
@@ -144,6 +145,21 @@ const sendMail = (e) => {
   }
 };
 
+    setShowSuccessAnimation(true);
+    resetForm();
+    setAttachments([]);
+    setSelectedContacts([]);
+    setComposing(false);
+  } catch (err) {
+    console.error("Error sending email:", err);
+  } finally {
+    setLoading(false);
+    setTimeout(() => {
+      onCancel();
+    }, 1000);
+  }
+};
+
 
   const handleContactSelect = (contact) => {
     // Toggle contact selection
@@ -180,7 +196,7 @@ const sendMail = (e) => {
                 value={formData.to}
                 onChange={handleInputChange}
                 className="outline-none flex-grow"
-                placeholder="Enter email or select from contacts"
+                placeholder="Enter username or select from contacts"
               />
               <button
                 type="button"
@@ -330,7 +346,7 @@ const sendMail = (e) => {
                     <div>
                       <div className="font-medium">{contact.name}</div>
                       <div className="text-sm text-gray-600">
-                        {contact.email}
+                        {contact.username}
                       </div>
                     </div>
                     <input

@@ -1,6 +1,6 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
-
+import ContactsService from "../services/ContactsService";
 const ContactsContext = createContext();
 
 export const ContactsProvider = ({ children }) => {
@@ -8,14 +8,14 @@ export const ContactsProvider = ({ children }) => {
     {
       id: 1,
       name: "John Doe",
-      email: "john.doe@example.com",
+      username: "john.doe@example.com",
       phone: "+1 (555) 123-4567",
       label: "Personal",
     },
     {
       id: 2,
       name: "Jane Smith",
-      email: "jane.smith@work.com",
+      username: "jane.smith@work.com",
       phone: "+1 (555) 987-6543",
       label: "Work",
     },
@@ -23,12 +23,16 @@ export const ContactsProvider = ({ children }) => {
 
   const [selectedContact, setSelectedContact] = useState(null);
 
-  const addContact = (newContact) => {
-    const contactToAdd = {
-      ...newContact,
-      id: contacts.length > 0 ? Math.max(...contacts.map((c) => c.id)) + 1 : 1,
-    };
-    setContacts((prevContacts) => [...prevContacts, contactToAdd]);
+  const addContact = async (newContact) => {
+    const contactToAdd = await ContactsService.addContact(newContact);
+    setContacts((prevContacts) => [
+      ...prevContacts,
+      {
+        id: contactToAdd.id,
+        name: contactToAdd.name,
+        username: contactToAdd.emails[0],
+      },
+    ]);
   };
 
   const updateContact = (id, updatedContact) => {
@@ -39,14 +43,37 @@ export const ContactsProvider = ({ children }) => {
     );
   };
 
-  const deleteContact = (id) => {
+  useEffect(() => {
+    const getContacts = async () => {
+      try {
+        const fetchedContacts = await ContactsService.fetchContacts();
+        console.log("Fetched contacts:", fetchedContacts);
+
+        // Transform the fetched contacts
+        const transformedContacts = fetchedContacts.map((contact) => ({
+          id: contact.id,
+          name: contact.name,
+          username: contact.emails[0],
+        }));
+
+        // Update the state
+        setContacts(transformedContacts);
+      } catch (error) {
+        console.error("Error fetching contacts:", error);
+      }
+    };
+
+    getContacts();
+  }, []);
+
+  const deleteContact = async (id) => {
     setContacts((prevContacts) =>
       prevContacts.filter((contact) => contact.id !== id)
     );
-    // Clear selection if deleted contact was selected
     if (selectedContact && selectedContact.id === id) {
       setSelectedContact(null);
     }
+    await ContactsService.deleteContact(id);
   };
 
   return (
