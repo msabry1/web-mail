@@ -61,3 +61,31 @@ export const useLogout = () => {
 
   return { logout, isLoading };
 };
+
+
+export const useRegister = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const register = useCallback(async (userData) => {
+        setIsLoading(true);
+        setError(null);
+
+        const { data, error: requestError } = await handleRequest(() =>
+            authAxios.post('/auth/register', userData)
+        );
+
+        if (requestError) {
+            setError(requestError);
+            setIsLoading(false);
+            return false;
+        }
+
+        const { token, ...user } = data;
+        setAuthData(token, user);
+        setIsLoading(false);
+        return true;
+    }, []);
+
+    return { register, isLoading, error };
+};
