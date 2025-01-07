@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-WebmailApplication<webMail>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.foe.webmail.WebmailApplication",
+      "projectName": "webMail",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
