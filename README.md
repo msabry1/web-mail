@@ -122,13 +122,14 @@ The frontend application will be available at `http://localhost:5173`
 ├── src/main/java/com/foe/webmail
     ├── java/com/foe/webmail
         ├── aws         # AWS S3 configuration and integration
-        ├── config      # Application configurations (Security, CORS, etc.)
+        ├── config      # Application configurations
         ├── controller  # REST API endpoints
         ├── dto         # Data Transfer Objects
         ├── entity      # Database entities
         ├── mapper      # Object mappers
         ├── repository  # Database repositories
-        └──  service     # Business logic services
+        ├── security    # Security services and configurations
+        └──  service    # Business logic services
     ├── resources   # Application properties and database schema
         
 ```
