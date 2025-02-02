@@ -1,22 +1,26 @@
-package com.foe.webmail.entity;
+package com.foe.webmail.security.user;
 
+import com.foe.webmail.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
 
-public class UserPrinciple implements UserDetails {
-
+public class UserPrincipal implements UserDetails {
     private final User user;
 
-    public UserPrinciple(User user) {
+    public UserPrincipal(User user) {
         this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList(); // No roles in this implementation
+        return Collections.emptyList();
     }
 
     @Override
@@ -47,17 +51,5 @@ public class UserPrinciple implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public String getFirstName() {
-        return user.getFirstName();
-    }
-
-    public String getLastName() {
-        return user.getLastName();
     }
 }

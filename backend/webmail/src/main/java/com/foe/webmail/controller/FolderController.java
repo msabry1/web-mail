@@ -5,12 +5,11 @@ import com.foe.webmail.dto.FolderDTO;
 import com.foe.webmail.dto.MailFilterDTO;
 import com.foe.webmail.dto.MailPreviewDTO;
 import com.foe.webmail.entity.Folder;
-import com.foe.webmail.entity.Mail;
-import com.foe.webmail.entity.UserPrinciple;
+import com.foe.webmail.entity.User;
+import com.foe.webmail.security.user.CurrentUser;
 import com.foe.webmail.service.userService.FolderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class FolderController {
 
     @PostMapping("folder")
     public ResponseEntity<Folder> createFolder(@RequestBody FolderDTO folderDto,
-                                               @AuthenticationPrincipal UserPrinciple user) {
+                                               @CurrentUser User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(folderService.createFolder(folderDto, user));
     }
 
@@ -38,8 +37,8 @@ public class FolderController {
 
     @PostMapping("folder/filter/{folderName}")
     public ResponseEntity<Long> getFolderFiltered(@RequestBody MailFilterDTO mailFilterDTO,
-                                                                  @PathVariable String folderName,
-                                                                  @AuthenticationPrincipal UserPrinciple user) {
+                                                  @PathVariable String folderName,
+                                                  @CurrentUser User user) {
         return ResponseEntity.status(HttpStatus.OK).body(folderService.filterAndAdd(folderName, mailFilterDTO, user));
     }
 

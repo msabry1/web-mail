@@ -2,14 +2,10 @@ package com.foe.webmail.service.security.AuthenticationService;
 
 import com.foe.webmail.dto.AuthenticationDto;
 import com.foe.webmail.entity.User;
+import com.foe.webmail.mappers.UserMapper;
 import com.foe.webmail.repository.UserRepository;
-import com.foe.webmail.entity.UserPrinciple;
-import com.foe.webmail.service.security.JwtService.JwtService;
+import com.foe.webmail.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,65 +15,38 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthenticationService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-
-    @Transactional
     public AuthenticationDto.AuthenticationResponse register(AuthenticationDto.RegisterRequest request) {
-        // Check if username already exists
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
 
-        // Create new user
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
+        User user = userMapper.toUser(request);
+        userRepository.save(user);
 
-        // Save user
-        User savedUser = userRepository.save(user);
+        String jwt = jwtUtil.generateToken(user.getUsername());
 
-        // Create UserPrinciple and generate token
-        UserPrinciple userPrinciple = new UserPrinciple(savedUser);
-        String jwt = jwtService.generateToken(userPrinciple);
-
-        // Return authentication response
-        return new AuthenticationDto.AuthenticationResponse(
-                jwt,
-                savedUser.getUsername(),
-                savedUser.getFirstName(),
-                savedUser.getLastName()
-        );
+        return userMapper.toAuthenticationResponse(jwt, user);
     }
 
     public AuthenticationDto.AuthenticationResponse login(AuthenticationDto.LoginRequest request) {
-        // Authenticate user
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Set authentication in context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
 
-        // Get user principle
-        UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
+        String jwt = jwtUtil.generateToken(request.getUsername());
 
-        // Generate JWT
-        String jwt = jwtService.generateToken(userPrinciple);
-
-        // Return authentication response
         return new AuthenticationDto.AuthenticationResponse(
                 jwt,
-                userPrinciple.getUsername(),
-                userPrinciple.getUser().getFirstName(),
-                userPrinciple.getUser().getLastName()
+                user.getUsername(),
+                user.getFirstName(),
+                user.getLastName()
         );
     }
 }

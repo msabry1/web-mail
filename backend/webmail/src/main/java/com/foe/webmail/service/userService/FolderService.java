@@ -7,10 +7,8 @@ import com.foe.webmail.dto.MailPreviewDTO;
 import com.foe.webmail.entity.Folder;
 import com.foe.webmail.entity.User;
 import com.foe.webmail.entity.Mail;
-import com.foe.webmail.entity.UserPrinciple;
 import com.foe.webmail.mappers.MailPreviewMapper;
 import com.foe.webmail.repository.FoldersRepository;
-import com.foe.webmail.repository.MailRepository;
 import com.foe.webmail.repository.UserRepository;
 import com.foe.webmail.service.mailService.MailFiltrationService;
 import org.springframework.stereotype.Service;
@@ -36,11 +34,10 @@ public class FolderService {
         this.mailFiltrationService = mailFiltrationService;
     }
 
-    public Folder createFolder(FolderDTO folderDto, UserPrinciple userPrinciple) {
+    public Folder createFolder(FolderDTO folderDto, User user) {
         Folder folder = new Folder();
         folder.setName(folderDto.getFolderName());
-        Optional<User> user = userRepository.findByUsername(userPrinciple.getUsername());
-        folder.setUser(user.get());
+        folder.setUser(user);
         return foldersRepository.save(folder);
     }
 
@@ -57,12 +54,12 @@ public class FolderService {
         foldersRepository.deleteById(id);
     }
 
-    public Long filterAndAdd (String folderName, MailFilterDTO mailFilterDTO,UserPrinciple userPrinciple) {
+    public Long filterAndAdd (String folderName, MailFilterDTO mailFilterDTO,User user) {
         Folder folder = new Folder();
         folder.setName(folderName);
-        folder.setUser(userRepository.findByUsername(userPrinciple.getUsername()).get());
+        folder.setUser(user);
         folder = foldersRepository.save(folder);
-        mailFilterDTO.setReceiver(userPrinciple.getUsername());
+        mailFilterDTO.setReceiver(user.getUsername());
         List<Mail> mails = mailFiltrationService.getMailByFilters(mailFilterDTO);
         for (Mail mail : mails) {
             foldersRepository.addMailToFolder(folder.getId(), mail.getId());
@@ -70,10 +67,10 @@ public class FolderService {
         return folder.getId();
     }
 
-    public void addMail(Long mailId,Long folderId, UserPrinciple userPrinciple) {
+    public void addMail(Long mailId,Long folderId, User user) {
         Optional<Folder> folderOp = foldersRepository.findById(folderId);
         Folder folder = folderOp.orElse(null);
-        if(folder != null || !folder.getUser().getUsername().equals(userPrinciple.getUsername())) {
+        if(folder != null || !folder.getUser().getUsername().equals(user.getUsername())) {
             throw new IllegalArgumentException("unknwon folder");
         }
         foldersRepository.addMailToFolder(folder.getId(), mailId);

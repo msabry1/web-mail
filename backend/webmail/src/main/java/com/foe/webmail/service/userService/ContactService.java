@@ -4,7 +4,6 @@ package com.foe.webmail.service.userService;
 import com.foe.webmail.dto.ContactDTO;
 import com.foe.webmail.entity.Contact;
 import com.foe.webmail.entity.User;
-import com.foe.webmail.entity.UserPrinciple;
 import com.foe.webmail.mappers.ContactMapper;
 import com.foe.webmail.repository.ContactRepository;
 import com.foe.webmail.repository.UserRepository;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ContactService {
@@ -30,20 +28,15 @@ public class ContactService {
         this.userRepository = userRepository;
     }
 
-    public ContactDTO addContact(ContactDTO contactDTO, UserPrinciple userPrinciple) {
+    public ContactDTO addContact(ContactDTO contactDTO, User user) {
         Contact contact = contactMapper.toContactEntity(contactDTO);
-        Optional<User> user = userRepository.findByUsername(userPrinciple.getUsername());
-        if( user.isPresent() ) {
-            contact.setUser(user.get());
-        } else {
-            throw new IllegalArgumentException("no such a user");
-        }
+        contact.setUser(user);
         return contactMapper.toContactDTO(contactRepository.save(contact));
     }
 
-    public List<ContactDTO> getContacts(UserPrinciple userPrinciple) {
+    public List<ContactDTO> getContacts(User user) {
         Specification<Contact> spec = Specification.where(
-                ContactSpecification.hasUsername(userPrinciple.getUsername())
+                ContactSpecification.hasUsername(user.getUsername())
         );
         List<Contact> contacts = contactRepository.findAll(spec);
         List<ContactDTO> contactDTOS = new ArrayList<>();

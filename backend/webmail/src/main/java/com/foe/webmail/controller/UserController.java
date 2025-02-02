@@ -2,27 +2,25 @@ package com.foe.webmail.controller;
 
 
 import com.foe.webmail.dto.UserDTO;
-import com.foe.webmail.entity.UserPrinciple;
-import com.foe.webmail.service.userService.ContactService;
-import com.foe.webmail.service.userService.UserService;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.foe.webmail.entity.User;
+import com.foe.webmail.mappers.UserMapper;
+import com.foe.webmail.security.user.CurrentUser;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
 
-    UserService userService;
-    ContactService contactService;
+    private final UserMapper userMapper;
 
-    UserController(UserService userService, ContactService contactService) {
-        this.userService = userService;
-        this.contactService = contactService;
+    UserController(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
-    @GetMapping("users")
-    public UserDTO getUsers(@AuthenticationPrincipal UserPrinciple userPrinciple) {
-        return userService.getUserByToken(userPrinciple);
+    @PostMapping("/users")
+    public UserDTO getUsers(@CurrentUser User user) {
+        return userMapper.userToUserDTO(user);
     }
 
 }
