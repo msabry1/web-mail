@@ -3,6 +3,7 @@ package com.foe.webmail.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -41,6 +42,7 @@ public class AuthenticationDto {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class AuthenticationResponse {
         private String token;
         private String username;
