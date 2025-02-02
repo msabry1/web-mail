@@ -1,4 +1,4 @@
-package com.foe.webmail.service;
+package com.foe.webmail.service.mailService;
 
 import com.foe.webmail.constants.MailStatus;
 import com.foe.webmail.dto.EmailComposeDto;
@@ -9,6 +9,8 @@ import com.foe.webmail.entity.User;
 import com.foe.webmail.mappers.PermenantFileDtoToMailAttachements;
 import com.foe.webmail.repository.MailRepository;
 import com.foe.webmail.repository.UserRepository;
+import com.foe.webmail.service.attachments.AttachmentsUploadService;
+import com.foe.webmail.service.attachments.PermanentFileService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 

@@ -7,7 +7,7 @@ import com.foe.webmail.dto.MailPreviewDTO;
 import com.foe.webmail.entity.Folder;
 import com.foe.webmail.entity.User;
 import com.foe.webmail.security.user.CurrentUser;
-import com.foe.webmail.service.userService.FolderService;
+import com.foe.webmail.service.folders.FolderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

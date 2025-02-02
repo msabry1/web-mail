@@ -1,4 +1,4 @@
-package com.foe.webmail.service.userService;
+package com.foe.webmail.service.contacts;
 
 
 import com.foe.webmail.dto.ContactDTO;
@@ -7,7 +7,7 @@ import com.foe.webmail.entity.User;
 import com.foe.webmail.mappers.ContactMapper;
 import com.foe.webmail.repository.ContactRepository;
 import com.foe.webmail.repository.UserRepository;
-import com.foe.webmail.service.userService.filter.ContactSpecification;
+import com.foe.webmail.service.contacts.filter.ContactSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 

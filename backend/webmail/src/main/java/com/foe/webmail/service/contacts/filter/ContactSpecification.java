@@ -1,4 +1,4 @@
-package com.foe.webmail.service.userService.filter;
+package com.foe.webmail.service.contacts.filter;
 
 import com.foe.webmail.entity.Contact;
 import com.foe.webmail.entity.User;

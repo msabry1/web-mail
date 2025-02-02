@@ -4,7 +4,7 @@ package com.foe.webmail.controller;
 import com.foe.webmail.dto.ContactDTO;
 import com.foe.webmail.entity.User;
 import com.foe.webmail.security.user.CurrentUser;
-import com.foe.webmail.service.userService.ContactService;
+import com.foe.webmail.service.contacts.ContactService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
