@@ -1,4 +1,4 @@
-package com.foe.webmail.service;
+package com.foe.webmail.service.attachments;
 
 import com.foe.webmail.dto.PermanentFileDto;
 import org.springframework.beans.factory.annotation.Autowired;

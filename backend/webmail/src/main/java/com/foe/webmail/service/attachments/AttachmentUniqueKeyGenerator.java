@@ -1,4 +1,4 @@
-package com.foe.webmail.service;
+package com.foe.webmail.service.attachments;
 
 import org.springframework.web.multipart.MultipartFile;
 

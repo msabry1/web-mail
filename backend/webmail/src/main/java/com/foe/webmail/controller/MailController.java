@@ -8,7 +8,7 @@ import com.foe.webmail.dto.MailFilterDTO;
 import com.foe.webmail.dto.MailPreviewDTO;
 import com.foe.webmail.entity.User;
 import com.foe.webmail.security.user.CurrentUser;
-import com.foe.webmail.service.EmailSenderService;
+import com.foe.webmail.service.mailService.EmailSenderService;
 import com.foe.webmail.service.mailService.MailServiceFacade;
 import org.springframework.web.bind.annotation.*;
 

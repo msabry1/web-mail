@@ -1,4 +1,4 @@
-package com.foe.webmail.service.security.AuthenticationService;
+package com.foe.webmail.service.userService;
 
 import com.foe.webmail.dto.AuthenticationDto;
 import com.foe.webmail.entity.User;
@@ -8,7 +8,6 @@ import com.foe.webmail.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

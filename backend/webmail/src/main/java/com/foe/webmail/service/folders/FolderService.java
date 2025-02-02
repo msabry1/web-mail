@@ -1,4 +1,4 @@
-package com.foe.webmail.service.userService;
+package com.foe.webmail.service.folders;
 
 
 import com.foe.webmail.dto.FolderDTO;
